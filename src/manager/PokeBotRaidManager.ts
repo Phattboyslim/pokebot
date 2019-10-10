@@ -47,13 +47,13 @@ export class PokeBotRaidManager {
     createRaid(messageId: string, raidTitle: string) {
         this.raids.push({ messageId: messageId, messageTitle: raidTitle, players: [] });
     }
-    removeUserAdditionEmojis(reaction: MessageReaction, user: User) {
+    async removeUserAdditionEmojis(reaction: MessageReaction, user: User) {
         var reactions = reaction.message.reactions;
-        additionsEmojis.forEach(emoji => {
-            reactions.filter(r => r.emoji.name === emoji).forEach(re => {
+        additionsEmojis.forEach(async emoji => {
+            reactions.filter(r => r.emoji.name === emoji).forEach(async re => {
                 if (re.users.map(u => u.id).filter(id => id === user.id).length === 1) {
                     if (re.emoji.name != '👍' && re.emoji.name != reaction.emoji.name) {
-                        re.remove(user);
+                        await re.remove(user);
                     }
                 }
             });
@@ -62,7 +62,7 @@ export class PokeBotRaidManager {
     findDisplayName(message: Message) {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
     }
-    createRaidResponseMessage(reaction: MessageReaction) {
+    async createRaidResponseMessage(reaction: MessageReaction) {
         var raidWithPlayersString = '';
         this.raids.forEach((raid: IRaid) => {
             if (raid.messageId === reaction.message.id) {
@@ -73,6 +73,6 @@ export class PokeBotRaidManager {
                 });
             }
         });
-        reaction.message.edit(raidWithPlayersString);
+        await reaction.message.edit(raidWithPlayersString);
     }
 }

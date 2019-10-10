@@ -67,16 +67,22 @@ bot.on('message', async (message: Message) => {
         .split(' ')
         .filter(Boolean) // `<- filters out empty strings
 
-      if (ValidationHelper.isValidRaidRequestCommand(message.content) && ["631914851710533642", "631624476173533184", "631726419243696128"].some(x => x === message.channel.id)) {
-        var response = "⚔️ " + cmdArguments.splice(2).join(' ') + " ⚔️";
-        message.channel.send(response);
-        message.delete();
+      if (ValidationHelper.isValidRaidRequestCommand(message.content)) {
+        var response = ""
+        if (["631914851710533642", "631624476173533184", "631726419243696128"].some(x => x === message.channel.id)) {
+          response = "⚔️ " + cmdArguments.splice(2).join(' ') + " ⚔️";
+          await message.channel.send(response);
+        } else {
+          response = "This command only works in raid channels\n"
+          await message.author.send(response);
+        }
+        await message.delete();
       } else if (ValidationHelper.isValidHelpRequestCommand(message.content)) {
         var response = "Vroaget an mi aj ulpe nodig et 😂😂😂😂";
-        message.author.send(response);
-        message.delete();
+        await message.author.send(response);
+        await message.delete();
       } else if (message.content === "Its over 9000! +10") {
-        message.channel.fetchMessages({ limit: Number(message.content.split(' ')[3].substring(1)) }).then(messages => {
+        await message.channel.fetchMessages({ limit: Number(message.content.split(' ')[3].substring(1)) }).then(messages => {
           var filterMessages = messages.filter(x => x.content.indexOf("⚔️") == -1)
           filterMessages.forEach(async msg => {
             await msg.delete()
