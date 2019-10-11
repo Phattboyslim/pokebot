@@ -87,7 +87,9 @@ bot.on('message', async (message: Message) => {
         await message.channel.fetchMessages({ limit: Number(message.content.split(' ')[3].substring(1)) }).then(messages => {
           var filterMessages = messages.filter(x => x.content.indexOf("⚔️") == -1)
           filterMessages.forEach(async msg => {
-            await msg.delete()
+            if (msg.author.id != botId) {
+              await msg.delete()
+            }
           })
         })
       } else if (ValidationHelper.isValidRankRequestCommand(message.content)) {
