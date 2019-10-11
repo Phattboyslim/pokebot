@@ -3,6 +3,7 @@ import { IPlayer } from "../interfaces/IPlayer"
 import { IRaid } from "../interfaces/IRaid"
 import { injectable } from 'inversify'
 import "reflect-metadata"
+import { isNullOrUndefined } from 'util'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 
@@ -48,16 +49,25 @@ export class PokeBotRaidManager {
         this.raids.push({ messageId: messageId, messageTitle: raidTitle, players: [] });
     }
     async removeUserAdditionEmojis(reaction: MessageReaction, user: User) {
-        var reactions = reaction.message.reactions;
-        additionsEmojis.forEach(async emoji => {
-            reactions.filter(r => r.emoji.name === emoji).forEach(async re => {
-                if (re.users.map(u => u.id).filter(id => id === user.id).length === 1) {
-                    if (re.emoji.name != '👍' && re.emoji.name != reaction.emoji.name) {
-                        await re.remove(user);
+        if (reaction.emoji.name == "👍") {
+            return
+        }
+        if (additionsEmojis.indexOf(reaction.emoji.name) == -1 && reaction.emoji.name != '👍') {
+            return await reaction.remove(user)
+        }
+        var number = additionsEmojis.indexOf(reaction.emoji.name) + 1
+        if (this.getPlayerFromRaid(this.getRaid(reaction.message.id), user.id).additions != number) {
+            var dontDelete = reaction.message.reactions.filter(x => x.emoji.name === '👍' || x.emoji.name === reaction.emoji.name)
+
+            reaction.message.reactions.forEach(reactie => {
+                if (dontDelete.filter(x => x.emoji.name === reactie.emoji.name).values.length == 0) {
+                    if (reactie.emoji.name != '👍' && reactie.emoji.name != reaction.emoji.name) {
+                        reactie.remove(user);
                     }
                 }
-            });
-        });
+            })
+        }
+        // nu moetn ze ni wegdoen tenzij datter al e nummer insta
     }
     findDisplayName(message: Message) {
         return message.guild.members.find(x => x.id === message.author.id).displayName;

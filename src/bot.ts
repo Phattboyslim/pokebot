@@ -116,15 +116,17 @@ export enum PokemonFactions {
   Valor = "Valor",
   Mystic = "Mystic"
 }
-bot.on('messageReactionAdd', (reaction: MessageReaction, user: User) => {
+bot.on('messageReactionAdd', async (reaction: MessageReaction, user: User) => {
   try {
     if (reaction.emoji.name === '👍') {
       pokeBotRaidManager.addPlayerToRaid(reaction, user);
-      pokeBotRaidManager.createRaidResponseMessage(reaction)
+      await pokeBotRaidManager.createRaidResponseMessage(reaction)
     } else if (pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name)) {
-      pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
+      await pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
       pokeBotRaidManager.addPlayerAddition(reaction.message.id, user.id, reaction.emoji.name)
-      pokeBotRaidManager.createRaidResponseMessage(reaction)
+      await pokeBotRaidManager.createRaidResponseMessage(reaction)
+    } else {
+      await pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
     }
   } catch (error) { console.log(error) }
 })
