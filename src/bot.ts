@@ -10,6 +10,8 @@ const pokeBotRaidManager = dependencyInjectionContainer.get<PokeBotRaidManager>(
 
 const botId = '623828070062620673'
 
+const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
+
 // var Discord = require("discord.io");
 var logger = require('winston')
 var auth = require('../src/auth')
@@ -146,7 +148,11 @@ bot.on('messageReactionRemove', (reaction: MessageReaction, user: User) => {
           }
         })
       } else {
-        pokeBotRaidManager.resetPlayerAdditions(reaction.message.id, user.id)
+        var number = additionsEmojis.indexOf(reaction.emoji.name) + 1
+        var additions = pokeBotRaidManager.getPlayerFromRaid(pokeBotRaidManager.getRaid(reaction.message.id), user.id).additions
+        if (additions == number) {
+          pokeBotRaidManager.resetPlayerAdditions(reaction.message.id, user.id)
+        }
         pokeBotRaidManager.createRaidResponseMessage(reaction)
       }
     }
