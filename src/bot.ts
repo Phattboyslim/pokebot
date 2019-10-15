@@ -56,7 +56,7 @@ class PokeBot {
         }
         else {
           console.log(`Log: Received message from bot: ${this.pokeBotRaidManager.findDisplayName(message)}`)
-          if (message.content.indexOf("⚔️") > -1) {
+          if (message.content.indexOf("🗡️") > -1) {
             this.pokeBotRaidManager.createRaid(message.id, message.content);
           } else if (message.content.indexOf("📌") > -1) {
             await message.pin()
