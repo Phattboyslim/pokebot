@@ -3,7 +3,6 @@ import { ValidationHelper } from './helpers/ValidationHelper'
 import { PokeBotRaidManager } from './manager/PokeBotRaidManager';
 import { MessageService } from './services/message.service';
 import { dependencyInjectionContainer } from "./di-container"
-import { FileService } from './services/file.service';
 
 const Discord = require('discord.js')
 
