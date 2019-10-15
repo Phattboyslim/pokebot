@@ -4,6 +4,8 @@ import { IRaid } from "../interfaces/IRaid"
 import { injectable } from 'inversify'
 import "reflect-metadata"
 import { isNullOrUndefined } from 'util'
+import { Player } from '../models/Player'
+import { Raid } from '../models/Raid'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 
@@ -39,14 +41,10 @@ export class PokeBotRaidManager {
     }
     addPlayerToRaid(reaction: MessageReaction, user: User) {
         this.getRaid(reaction.message.id)
-            .players.push({
-                id: user.id,
-                name: reaction.message.guild.members.get(user.id)!.displayName,
-                additions: 0,
-            });
+            .players.push(new Player(user.id, reaction.message.guild.members.get(user.id)!.displayName));
     }
     createRaid(messageId: string, raidTitle: string) {
-        this.raids.push({ messageId: messageId, messageTitle: raidTitle, players: [] });
+        this.raids.push(new Raid(messageId, raidTitle, [], new Date()));
     }
     async removeUserAdditionEmojis(reaction: MessageReaction, user: User) {
         if (reaction.emoji.name == "👍") {
@@ -67,7 +65,6 @@ export class PokeBotRaidManager {
                 }
             })
         }
-        // nu moetn ze ni wegdoen tenzij datter al e nummer insta
     }
     findDisplayName(message: Message) {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
