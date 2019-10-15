@@ -66,6 +66,7 @@ export class MessageService implements IMessageService {
                 await user.addRole(role)
             }
             try {
+                await this.message!.delete()
                 this.message!.guild.members.get(user.id)!.setNickname(`${firstName}|${playerName}|${emoji}|${level}`)
             } catch (error) {
                 console.log(error)
