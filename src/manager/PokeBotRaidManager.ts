@@ -43,8 +43,40 @@ export class PokeBotRaidManager {
         this.getRaid(reaction.message.id)
             .players.push(new Player(user.id, reaction.message.guild.members.get(user.id)!.displayName));
     }
-    createRaid(messageId: string, raidTitle: string) {
-        this.raids.push(new Raid(messageId, raidTitle, [], new Date()));
+    createRaid(messageId: string, raidTitle: string): boolean {
+        var retVal = false
+        try {
+            var commandArguments = raidTitle.split(' ')
+            var timeArgument = commandArguments[commandArguments.length - 2].toLowerCase()
+            var hours; var minutes;
+            switch (timeArgument[2]) {
+                case "u": {
+                    hours = Number(timeArgument.split('u')[0])
+                    minutes = Number(timeArgument.split('u')[1])
+                }
+                case ":": {
+                    hours = Number(timeArgument.split(':')[0])
+                    minutes = Number(timeArgument.split(':')[1])
+                }
+            }
+            if ((hours && hours < 24) && (minutes && minutes < 59)) {
+                var endDate = new Date();
+                endDate.setHours(Number(hours));
+                endDate.setMinutes(Number(minutes));
+
+
+                var now = new Date()
+
+                if (endDate > now) { // TODO: WHEN AWAKE AND RESTED THEN THINK ABOUT THIS
+                    this.raids.push(new Raid(messageId, raidTitle, [], endDate));
+                    retVal = true
+                }
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+        return retVal
     }
     async removeUserAdditionEmojis(reaction: MessageReaction, user: User) {
         if (reaction.emoji.name == "👍") {

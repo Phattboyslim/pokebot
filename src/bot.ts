@@ -56,7 +56,9 @@ class PokeBot {
         else {
           console.log(`Log: Received message from bot: ${this.pokeBotRaidManager.findDisplayName(message)}`)
           if (message.content.indexOf("🗡️") > -1) {
-            this.pokeBotRaidManager.createRaid(message.id, message.content);
+            if (!this.pokeBotRaidManager.createRaid(message.id, message.content)) {
+              await message.delete()
+            }
           } else if (message.content.indexOf("📌") > -1) {
             await message.pin()
           }
@@ -68,10 +70,11 @@ class PokeBot {
 
     this.bot.on('messageReactionAdd', async (reaction: MessageReaction, user: User) => {
       try {
-        if (reaction.emoji.name === '👍') {
+        var raid = this.pokeBotRaidManager.getRaid(reaction.message.id);
+        if (reaction.emoji.name === '👍' && !raid.closed) {
           this.pokeBotRaidManager.addPlayerToRaid(reaction, user);
           await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
-        } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name)) {
+        } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name) && !raid.closed) {
           await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
           this.pokeBotRaidManager.addPlayerAddition(reaction.message.id, user.id, reaction.emoji.name)
           await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
@@ -83,25 +86,28 @@ class PokeBot {
 
     this.bot.on('messageReactionRemove', (reaction: MessageReaction, user: User) => {
       try {
-        if (reaction.emoji.name === '👍') {
-          this.pokeBotRaidManager.deletePlayerFromRaid(reaction.message.id, user.id);
-          this.pokeBotRaidManager.createRaidResponseMessage(reaction)
-        } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name)) {
-          var reactions = reaction.message.reactions
-          var emojiUsers = reactions.filter(r => r.emoji.name === reaction.emoji.name)
-          if (emojiUsers.values.length > 0) {
-            emojiUsers.forEach(re => {
-              if (re.users.map(u => u.id).filter(id => id === user.id).length === 0) {
+        var raid = this.pokeBotRaidManager.getRaid(reaction.message.id);
+        if (!raid.closed) {
+          if (reaction.emoji.name === '👍') {
+            this.pokeBotRaidManager.deletePlayerFromRaid(reaction.message.id, user.id);
+            this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+          } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name)) {
+            var reactions = reaction.message.reactions
+            var emojiUsers = reactions.filter(r => r.emoji.name === reaction.emoji.name)
+            if (emojiUsers.values.length > 0) {
+              emojiUsers.forEach(re => {
+                if (re.users.map(u => u.id).filter(id => id === user.id).length === 0) {
+                  this.pokeBotRaidManager.resetPlayerAdditions(reaction.message.id, user.id)
+                }
+              })
+            } else {
+              var number = additionsEmojis.indexOf(reaction.emoji.name) + 1
+              var additions = this.pokeBotRaidManager.getPlayerFromRaid(this.pokeBotRaidManager.getRaid(reaction.message.id), user.id).additions
+              if (additions == number) {
                 this.pokeBotRaidManager.resetPlayerAdditions(reaction.message.id, user.id)
               }
-            })
-          } else {
-            var number = additionsEmojis.indexOf(reaction.emoji.name) + 1
-            var additions = this.pokeBotRaidManager.getPlayerFromRaid(this.pokeBotRaidManager.getRaid(reaction.message.id), user.id).additions
-            if (additions == number) {
-              this.pokeBotRaidManager.resetPlayerAdditions(reaction.message.id, user.id)
+              this.pokeBotRaidManager.createRaidResponseMessage(reaction)
             }
-            this.pokeBotRaidManager.createRaidResponseMessage(reaction)
           }
         }
       } catch (error) { console.log(error) }
@@ -112,10 +118,4 @@ class PokeBot {
 }
 
 new PokeBot().run()
-
-export enum PokemonFactions {
-  Instinct = "Instinct",
-  Valor = "Valor",
-  Mystic = "Mystic"
-}
 
