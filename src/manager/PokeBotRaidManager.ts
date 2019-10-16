@@ -64,15 +64,12 @@ export class PokeBotRaidManager {
                 endDate.setHours(Number(hours));
                 endDate.setMinutes(Number(minutes));
 
-
                 var now = new Date()
-
                 if (endDate > now) { // TODO: WHEN AWAKE AND RESTED THEN THINK ABOUT THIS
                     this.raids.push(new Raid(messageId, raidTitle, [], endDate));
                     retVal = true
                 }
             }
-
         } catch (error) {
             console.log(error)
         }

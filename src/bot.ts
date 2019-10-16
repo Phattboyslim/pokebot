@@ -58,6 +58,7 @@ class PokeBot {
           if (message.content.indexOf("🗡️") > -1) {
             if (!this.pokeBotRaidManager.createRaid(message.id, message.content)) {
               await message.delete()
+              await message.channel.send("Je hebt waarschijnlijk de datum verkeerd ingevuld.")
             }
           } else if (message.content.indexOf("📌") > -1) {
             await message.pin()
