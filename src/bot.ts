@@ -71,15 +71,17 @@ class PokeBot {
     this.bot.on('messageReactionAdd', async (reaction: MessageReaction, user: User) => {
       try {
         var raid = this.pokeBotRaidManager.getRaid(reaction.message.id);
-        if (reaction.emoji.name === '👍' && !raid.closed) {
-          this.pokeBotRaidManager.addPlayerToRaid(reaction, user);
-          await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
-        } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name) && !raid.closed) {
-          await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
-          this.pokeBotRaidManager.addPlayerAddition(reaction.message.id, user.id, reaction.emoji.name)
-          await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
-        } else {
-          await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
+        if (!raid.closed) {
+          if (reaction.emoji.name === '👍') {
+            this.pokeBotRaidManager.addPlayerToRaid(reaction, user);
+            await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+          } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name) && !raid.closed) {
+            await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
+            this.pokeBotRaidManager.addPlayerAddition(reaction.message.id, user.id, reaction.emoji.name)
+            await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+          } else {
+            await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
+          }
         }
       } catch (error) { console.log(error) }
     })
