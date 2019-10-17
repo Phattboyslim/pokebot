@@ -1,4 +1,4 @@
-import { Message, MessageReaction, User } from 'discord.js'
+import { Message, MessageReaction, User, RichEmbed, RichEmbedOptions } from 'discord.js'
 import { IPlayer } from "../interfaces/IPlayer"
 import { IRaid } from "../interfaces/IRaid"
 import { injectable } from 'inversify'
@@ -53,11 +53,11 @@ export class PokeBotRaidManager {
                 case "u": {
                     hours = Number(timeArgument.split('u')[0])
                     minutes = Number(timeArgument.split('u')[1])
-                }
+                } break;
                 case ":": {
                     hours = Number(timeArgument.split(':')[0])
                     minutes = Number(timeArgument.split(':')[1])
-                }
+                } break;
             }
             if ((hours && hours < 24) && (minutes && minutes < 59)) {
                 var endDate = new Date();
@@ -99,16 +99,39 @@ export class PokeBotRaidManager {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
     }
     async createRaidResponseMessage(reaction: MessageReaction) {
-        var raidWithPlayersString = '';
-        this.raids.forEach((raid: IRaid) => {
-            if (raid.messageId === reaction.message.id) {
-                raidWithPlayersString += `${raid.messageTitle}`;
-                raid.players.forEach((player: IPlayer) => {
-                    raidWithPlayersString += `\n${player.name}`;
-                    raidWithPlayersString += player.additions > 0 ? ` +${player.additions}` : '';
-                });
+
+
+
+        var raid = this.getRaid(reaction.message.id)
+
+        if (raid != null) {
+            var playersString = ""
+            raid.players.forEach((player: IPlayer) => {
+                playersString += `\n${player.name}`;
+                playersString += player.additions > 0 ? ` +${player.additions}` : '';
+            });
+
+            var richEmbedOptions: RichEmbedOptions = {
+                title: raid.messageTitle,
+                description: playersString
             }
-        });
-        await reaction.message.edit(raidWithPlayersString);
+            let richEmbed = new RichEmbed(richEmbedOptions);
+
+            richEmbed.setColor("#2196f3")
+
+            await reaction.message.edit(richEmbed);
+
+        }
+
+        // var raidWithPlayersString = '';
+        // this.raids.forEach((raid: IRaid) => {
+        //     if (raid.messageId === reaction.message.id) {
+        //         raidWithPlayersString += `${raid.messageTitle}`;
+        //         raid.players.forEach((player: IPlayer) => {
+        //             raidWithPlayersString += `\n${player.name}`;
+        //             raidWithPlayersString += player.additions > 0 ? ` +${player.additions}` : '';
+        //         });
+        //     }
+        // });
     }
 }
