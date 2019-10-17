@@ -33,9 +33,13 @@ class PokeBot {
       try {
         if (message.author.id != botId) {
           console.log(`Log: Received message from user: ${this.pokeBotRaidManager.findDisplayName(message)}`)
-
-          if (ValidationHelper.isValidRaidRequestCommand(message.content)) {
-            this.messageService.handleRaidStart()
+          if (ValidationHelper.isValidRaidCommand(message.content)) {
+            if (ValidationHelper.isValidRaidRequestCommand(message.content)) {
+              this.messageService.handleRaidStart()
+            } else {
+              await message.delete()
+              await message.author.send("Je hebt een verkeerd commando ingegeven!")
+            }
           } else if (ValidationHelper.isValidHelpRequestCommand(message.content)) {
             this.messageService.handleHelpRequest()
           } else if (message.content === "Its over 9000! +10") {
@@ -54,11 +58,10 @@ class PokeBot {
           }
         }
         else {
-          console.log(`Log: Received message from bot: ${this.pokeBotRaidManager.findDisplayName(message)}`)
+          console.log(`Log: Received message from bot`)
           if (message.content.indexOf("🗡️") > -1) {
             if (!this.pokeBotRaidManager.createRaid(message.id, message.content)) {
               await message.delete()
-              await message.channel.send("Je hebt waarschijnlijk de datum verkeerd ingevuld.")
             }
           } else if (message.content.indexOf("📌") > -1) {
             await message.pin()
