@@ -1,10 +1,11 @@
 import { IMessageService } from "../interfaces/IMessageService";
-import { Message } from "discord.js";
+import { Message, RichEmbed } from "discord.js";
 import { isNullOrUndefined } from "util";
 import { injectable } from "inversify";
 import "reflect-metadata"
 
 const botId = '623828070062620673'
+const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 
 @injectable()
 export class MessageService implements IMessageService {
@@ -24,16 +25,21 @@ export class MessageService implements IMessageService {
             .filter(Boolean)
     }
 
-    handleRaidStart() {
+    async handleRaidStart() {
         var response = ""
+        this.message!.delete();
         if (["631914851710533642", "631624476173533184", "631726419243696128"].some(x => x === this.message!.channel.id)) {
-            response = "🗡️ " + this.commandArguments.splice(2).join(' ') + " 🗡️";
-            this.message!.channel.send(response);
+            let richEmbed = new RichEmbed()
+                .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
+                .setDescription(`Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`)
+                .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
+                .setColor("#31d32b")
+
+            await this.message!.channel.send(richEmbed);
         } else {
             response = "This command only works in raid channels\n"
             this.message!.author.send(response);
         }
-        this.message!.delete();
     }
 
     handleHelpRequest() {

@@ -6,6 +6,7 @@ import "reflect-metadata"
 import { isNullOrUndefined } from 'util'
 import { Player } from '../models/Player'
 import { Raid } from '../models/Raid'
+import * as colors from 'colors'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 
@@ -65,10 +66,11 @@ export class PokeBotRaidManager {
                 endDate.setMinutes(Number(minutes));
 
                 var now = new Date()
-                if (endDate > now) { // TODO: WHEN AWAKE AND RESTED THEN THINK ABOUT THIS
+                if (endDate > now) {
                     this.raids.push(new Raid(messageId, raidTitle, [], endDate));
                     retVal = true
                 }
+                // TODO: REFACTOR ERROR HANDLING
             }
         } catch (error) {
             console.log(error)
@@ -99,9 +101,6 @@ export class PokeBotRaidManager {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
     }
     async createRaidResponseMessage(reaction: MessageReaction) {
-
-
-
         var raid = this.getRaid(reaction.message.id)
 
         if (raid != null) {
@@ -111,13 +110,11 @@ export class PokeBotRaidManager {
                 playersString += player.additions > 0 ? ` +${player.additions}` : '';
             });
 
-            var richEmbedOptions: RichEmbedOptions = {
-                title: raid.messageTitle,
-                description: playersString
-            }
-            let richEmbed = new RichEmbed(richEmbedOptions);
-
-            richEmbed.setColor("#2196f3")
+            let richEmbed = new RichEmbed()
+                .setTitle(`🗡️ ${raid.messageTitle} 🗡️`)
+                .setDescription(playersString)
+                .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
+                .setColor("#31d32b")
 
             await reaction.message.edit(richEmbed);
 

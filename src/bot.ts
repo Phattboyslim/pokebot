@@ -35,7 +35,7 @@ class PokeBot {
           console.log(`Log: Received message from user: ${this.pokeBotRaidManager.findDisplayName(message)}`)
           if (ValidationHelper.isValidRaidCommand(message.content)) {
             if (ValidationHelper.isValidRaidRequestCommand(message.content)) {
-              this.messageService.handleRaidStart()
+              await this.messageService.handleRaidStart()
             } else {
               await message.delete()
               await message.author.send("Je hebt een verkeerd commando ingegeven!")
@@ -59,8 +59,8 @@ class PokeBot {
         }
         else {
           console.log(`Log: Received message from bot`)
-          if (message.content.indexOf("🗡️") > -1) {
-            if (!this.pokeBotRaidManager.createRaid(message.id, message.content)) {
+          if (message.embeds[0].title.indexOf("🗡️") > -1) {
+            if (!this.pokeBotRaidManager.createRaid(message.id, message.embeds[0].title)) {
               await message.delete()
             }
           } else if (message.content.indexOf("📌") > -1) {
