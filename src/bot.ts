@@ -59,7 +59,8 @@ class PokeBot {
         }
         else {
           console.log(`Log: Received message from bot`)
-          if (message.embeds[0].title.indexOf("🗡️") > -1) {
+          var embeds = message.embeds
+          if (embeds && embeds.length > 0 && embeds[0].title.indexOf("🗡️") > -1) {
             if (!this.pokeBotRaidManager.createRaid(message.id, message.embeds[0].title)) {
               await message.delete()
             }
