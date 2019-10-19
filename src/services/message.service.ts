@@ -6,7 +6,7 @@ import "reflect-metadata"
 
 const botId = '623828070062620673'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
-
+const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
 @injectable()
 export class MessageService implements IMessageService {
     private message: Message | null = null
@@ -31,7 +31,7 @@ export class MessageService implements IMessageService {
         if (["631914851710533642", "631624476173533184", "631726419243696128"].some(x => x === this.message!.channel.id)) {
             let richEmbed = new RichEmbed()
                 .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
-                .setDescription(`Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`)
+                .setDescription(raidingInfo)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
                 .setColor("#31d32b")
 

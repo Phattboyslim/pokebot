@@ -9,6 +9,7 @@ import { Raid } from '../models/Raid'
 import * as colors from 'colors'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
+const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
 
 @injectable()
 export class PokeBotRaidManager {
@@ -104,15 +105,17 @@ export class PokeBotRaidManager {
         var raid = this.getRaid(reaction.message.id)
 
         if (raid != null) {
-            var playersString = ""
+            var description = ""
             raid.players.forEach((player: IPlayer) => {
-                playersString += `\n${player.name}`;
-                playersString += player.additions > 0 ? ` +${player.additions}` : '';
+                description += `\n${player.name}`;
+                description += player.additions > 0 ? ` +${player.additions}` : '';
             });
 
+            description += `\n\n${raidingInfo}`
+
             let richEmbed = new RichEmbed()
-                .setTitle(`🗡️ ${raid.messageTitle} 🗡️`)
-                .setDescription(playersString)
+                .setTitle(raid.messageTitle)
+                .setDescription(description)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
                 .setColor("#31d32b")
 
