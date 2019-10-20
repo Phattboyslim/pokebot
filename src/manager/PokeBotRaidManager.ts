@@ -7,7 +7,7 @@ import { Player } from '../models/Player'
 import { Raid } from '../models/Raid'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
-const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
+const raidingInfo = `Reageer met 👍 om je aan de lijst toe te voegen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
 
 @injectable()
 export class PokeBotRaidManager {
@@ -43,8 +43,9 @@ export class PokeBotRaidManager {
         this.getRaid(reaction.message.id)
             .players.push(new Player(user.id, reaction.message.guild.members.get(user.id)!.displayName));
     }
-    createRaid(messageId: string, raidTitle: string): boolean {
-        var retVal = false
+
+    createRaid(message: Message, raidTitle: string): PokeBotErrors {
+        var retVal = PokeBotErrors.UNKNOWN // expected error if user enters wrong date
         try {
             var commandArguments = raidTitle.split(' ')
             var timeArgument = commandArguments[commandArguments.length - 2].toLowerCase()
@@ -58,6 +59,10 @@ export class PokeBotRaidManager {
                     hours = Number(timeArgument.split(':')[0])
                     minutes = Number(timeArgument.split(':')[1])
                 } break;
+                default: {
+                    retVal = PokeBotErrors.WRONG_DATE
+                    hours = 9001; minutes = 9001
+                }
             }
             if ((hours && hours < 24) && (minutes && minutes < 59)) {
                 var endDate = new Date();
@@ -66,13 +71,26 @@ export class PokeBotRaidManager {
 
                 var now = new Date()
                 if (endDate > now) {
-                    this.raids.push(new Raid(messageId, raidTitle, [], endDate));
-                    retVal = true
+                    var endSecs = endDate.getTime()
+                    var nowSecs = now.getTime();
+                    var timeSpan = endSecs - nowSecs
+                    var raid = new Raid(message.id, raidTitle, [], endDate)
+                    setTimeout(function () {
+                        console.log("Should close the raid")
+                    }, timeSpan)
+                    setTimeout(this.createRaidResponseMessage, timeSpan, message, raid)
+                    this.raids.push(raid);
+
+                    retVal = PokeBotErrors.UNDEFINED
+                } else {
+                    retVal = PokeBotErrors.WRONG_DATE
                 }
-                // TODO: REFACTOR ERROR HANDLING
+            } else {
+                retVal = PokeBotErrors.WRONG_DATE
             }
         } catch (error) {
             console.log(error)
+            retVal = PokeBotErrors.UNKNOWN
         }
         return retVal
     }
@@ -99,8 +117,7 @@ export class PokeBotRaidManager {
     findDisplayName(message: Message) {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
     }
-    async createRaidResponseMessage(reaction: MessageReaction) {
-        var raid = this.getRaid(reaction.message.id)
+    async createRaidResponseMessage(message: Message, raid: IRaid) {
 
         if (raid != null) {
             var description = ""
@@ -109,16 +126,15 @@ export class PokeBotRaidManager {
                 description += player.additions > 0 ? ` +${player.additions}` : '';
             });
 
-            description += `\n\n${raidingInfo}`
+            description += `\n\n${raid.closed ? "🔒 Raid is gesloten 🔒" : raidingInfo}`
 
             let richEmbed = new RichEmbed()
                 .setTitle(raid.messageTitle)
                 .setDescription(description)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
-                .setColor("#31d32b")
+                .setColor(raid.closed ? "#ff0000" : "#31d32b")
 
-            await reaction.message.edit(richEmbed);
-
+            await message.edit(richEmbed);
         }
 
         // var raidWithPlayersString = '';
@@ -133,3 +149,11 @@ export class PokeBotRaidManager {
         // });
     }
 }
+
+
+export enum PokeBotErrors {
+    UNDEFINED,
+    WRONG_DATE,
+    UNKNOWN
+}
+

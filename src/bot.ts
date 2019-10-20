@@ -1,8 +1,9 @@
 import { Message, Client, MessageReaction, User, TextChannel } from 'discord.js'
 import { ValidationHelper } from './helpers/ValidationHelper'
-import { PokeBotRaidManager } from './manager/PokeBotRaidManager';
+import { PokeBotRaidManager, PokeBotErrors } from './manager/PokeBotRaidManager';
 import { MessageService } from './services/message.service';
 import { dependencyInjectionContainer } from "./di-container"
+import { Raid } from './models/Raid';
 
 const Discord = require('discord.js')
 
@@ -61,7 +62,7 @@ class PokeBot {
           console.log(`Log: Received message from bot`)
           var embeds = message.embeds
           if (embeds && embeds.length > 0 && embeds[0].title.indexOf("🗡️") > -1) {
-            if (!this.pokeBotRaidManager.createRaid(message.id, message.embeds[0].title)) {
+            if (this.pokeBotRaidManager.createRaid(message, message.embeds[0].title) != PokeBotErrors.UNDEFINED) {
               await message.delete()
             }
           } else if (message.content.indexOf("📌") > -1) {
@@ -75,15 +76,15 @@ class PokeBot {
 
     this.bot.on('messageReactionAdd', async (reaction: MessageReaction, user: User) => {
       try {
-        var raid = this.pokeBotRaidManager.getRaid(reaction.message.id);
+        var raid: Raid = this.pokeBotRaidManager.getRaid(reaction.message.id);
         if (!raid.closed) {
           if (reaction.emoji.name === '👍') {
             this.pokeBotRaidManager.addPlayerToRaid(reaction, user);
-            await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+            await this.pokeBotRaidManager.createRaidResponseMessage(reaction.message, this.pokeBotRaidManager.getRaid(reaction.message.id))
           } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name) && !raid.closed) {
             await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
             this.pokeBotRaidManager.addPlayerAddition(reaction.message.id, user.id, reaction.emoji.name)
-            await this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+            await this.pokeBotRaidManager.createRaidResponseMessage(reaction.message, this.pokeBotRaidManager.getRaid(reaction.message.id))
           } else {
             await this.pokeBotRaidManager.removeUserAdditionEmojis(reaction, user);
           }
@@ -91,13 +92,14 @@ class PokeBot {
       } catch (error) { console.log(error) }
     })
 
-    this.bot.on('messageReactionRemove', (reaction: MessageReaction, user: User) => {
+    this.bot.on('messageReactionRemove', async (reaction: MessageReaction, user: User) => {
+      console.log(this.pokeBotRaidManager.getRaid(reaction.message.id))
       try {
         var raid = this.pokeBotRaidManager.getRaid(reaction.message.id);
         if (!raid.closed) {
           if (reaction.emoji.name === '👍') {
             this.pokeBotRaidManager.deletePlayerFromRaid(reaction.message.id, user.id);
-            this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+            this.pokeBotRaidManager.createRaidResponseMessage(reaction.message, this.pokeBotRaidManager.getRaid(reaction.message.id))
           } else if (this.pokeBotRaidManager.isValidAdditionEmoji(reaction.emoji.name)) {
             var reactions = reaction.message.reactions
             var emojiUsers = reactions.filter(r => r.emoji.name === reaction.emoji.name)
@@ -113,7 +115,7 @@ class PokeBot {
               if (additions == number) {
                 this.pokeBotRaidManager.resetPlayerAdditions(reaction.message.id, user.id)
               }
-              this.pokeBotRaidManager.createRaidResponseMessage(reaction)
+              this.pokeBotRaidManager.createRaidResponseMessage(reaction.message, this.pokeBotRaidManager.getRaid(reaction.message.id))
             }
           }
         }

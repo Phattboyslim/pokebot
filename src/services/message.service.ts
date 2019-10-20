@@ -28,6 +28,7 @@ export class MessageService implements IMessageService {
     async handleRaidStart() {
         var response = ""
         this.message!.delete();
+        // set the raids to only work in specific channels
         if (["631914851710533642", "631624476173533184", "631726419243696128"].some(x => x === this.message!.channel.id)) {
             let richEmbed = new RichEmbed()
                 .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
