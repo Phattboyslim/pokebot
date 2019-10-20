@@ -3,10 +3,8 @@ import { IPlayer } from "../interfaces/IPlayer"
 import { IRaid } from "../interfaces/IRaid"
 import { injectable } from 'inversify'
 import "reflect-metadata"
-import { isNullOrUndefined } from 'util'
 import { Player } from '../models/Player'
 import { Raid } from '../models/Raid'
-import * as colors from 'colors'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
