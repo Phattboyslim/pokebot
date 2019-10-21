@@ -75,9 +75,6 @@ export class PokeBotRaidManager {
                     var nowSecs = now.getTime();
                     var timeSpan = endSecs - nowSecs
                     var raid = new Raid(message.id, raidTitle, [], endDate)
-                    setTimeout(function () {
-                        console.log("Should close the raid")
-                    }, timeSpan)
                     setTimeout(this.createRaidResponseMessage, timeSpan, message, raid)
                     this.raids.push(raid);
 
