@@ -13,6 +13,7 @@
 		"@types/node": "^12.7.5",
 		"@types/yamljs": "^0.2.30",
 		"debug": "^4.1.1",
+		"discord-message-handler": "^2.0.1",
 		"discord.js": "^11.5.1",
 		"dotenv": "^8.1.0",
 		"inversify": "^5.0.1",
