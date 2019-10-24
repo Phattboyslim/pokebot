@@ -2,7 +2,7 @@ console.log('Hello world!')
 import { Client, TextChannel, Message, Channel } from 'discord.js'
 import { isNullOrUndefined } from 'util'
 import { MessageHandler } from 'discord-message-handler'
-import { GreetingCommands } from './GreetingCommands'
+import { GreetingCommands, RaidCommands } from './GreetingCommands'
 // import { MessageHandler } from 'discord-message-handler'
 export enum ChannelIds {
     Welcome = "632880237964951572"
@@ -20,6 +20,7 @@ export class DiscordClient {
     constructor() {
         this.handler = new MessageHandler();
         GreetingCommands.setup(this.handler);
+        RaidCommands.setup(this.handler)
     }
 
     login() {
