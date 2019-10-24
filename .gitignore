@@ -1,1 +1,5 @@
 auth.json
+lib/
+package-lock.json
+node_modules/*
+!node_modules/discord-message-handler/
