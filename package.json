@@ -4,7 +4,10 @@
 	"description": "My first Discord bot for pokemon go",
 	"main": "bot.js",
 	"scripts": {
-		"buildstart": "tsc && node lib/bot.js"
+		"buildstart": "tsc && node lib/bot.js",
+		"build":"tsc",
+		"start": "node lib/bot.js",
+		"start2": "node lib/bot2.js"
 	},
 	"author": "Mike Pattyn",
 	"dependencies": {
