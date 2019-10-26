@@ -1,10 +1,10 @@
 // file inversify.config.ts
 
 import { Container } from "inversify";
-import { PokeBotRaidManager } from "./manager/PokeBotRaidManager"
+import { RaidService } from "./services/raid.service"
 import { MessageService } from "./services/message.service";
 
 const dependencyInjectionContainer = new Container();
-dependencyInjectionContainer.bind<PokeBotRaidManager>(PokeBotRaidManager).toSelf();
-dependencyInjectionContainer.bind<MessageService>(MessageService).toSelf();
+dependencyInjectionContainer.bind<RaidService>(RaidService).toSelf().inSingletonScope();
+dependencyInjectionContainer.bind<MessageService>(MessageService).toSelf().inSingletonScope();
 export { dependencyInjectionContainer };

@@ -7,7 +7,7 @@
         "type": "node",
         "request": "launch",
         "name": "Launch Program",
-        "program": "${workspaceFolder}/src/bot2.ts",
+        "program": "${workspaceFolder}/src/bot.ts",
         "outFiles": [
             "${workspaceFolder}/**/*.js"
         ]

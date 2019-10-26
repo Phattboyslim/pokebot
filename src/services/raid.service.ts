@@ -1,16 +1,16 @@
 import { Message, MessageReaction, User, RichEmbed, RichEmbedOptions } from 'discord.js'
-import { IPlayer } from "../interfaces/IPlayer"
-import { IRaid } from "../interfaces/IRaid"
+import { IPlayer } from "../interfaces/player.interface"
+import { IRaid } from "../interfaces/raid.interface"
+import { Player } from '../models/player.class'
+import { Raid } from '../models/raid.class'
 import { injectable } from 'inversify'
 import "reflect-metadata"
-import { Player } from '../models/Player'
-import { Raid } from '../models/Raid'
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 const raidingInfo = `Reageer met 👍 om je aan de lijst toe te voegen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
 
 @injectable()
-export class PokeBotRaidManager {
+export class RaidService {
 
     raids: IRaid[] = [];
 
@@ -44,47 +44,28 @@ export class PokeBotRaidManager {
             .players.push(new Player(user.id, reaction.message.guild.members.get(user.id)!.displayName));
     }
 
-    createRaid(message: Message, raidTitle: string): PokeBotErrors {
+    createRaid(message: Message, commandArguments: string[], startedBy: User): PokeBotErrors {
         var retVal = PokeBotErrors.UNKNOWN // expected error if user enters wrong date
         try {
-            var commandArguments = raidTitle.split(' ')
             var timeArgument = commandArguments[commandArguments.length - 2].toLowerCase()
-            var hours; var minutes;
-            switch (timeArgument[2]) {
-                case "u": {
-                    hours = Number(timeArgument.split('u')[0])
-                    minutes = Number(timeArgument.split('u')[1])
-                } break;
-                case ":": {
-                    hours = Number(timeArgument.split(':')[0])
-                    minutes = Number(timeArgument.split(':')[1])
-                } break;
-                default: {
-                    retVal = PokeBotErrors.WRONG_DATE
-                    hours = 9001; minutes = 9001
-                }
-            }
-            if ((hours && hours < 24) && (minutes && minutes < 59)) {
-                var endDate = new Date();
-                endDate.setHours(Number(hours));
-                endDate.setMinutes(Number(minutes));
+            var date = new Date()
+            date.setHours(Number(timeArgument.split(":")[0]))
+            date.setMinutes(Number(timeArgument.split(":")[1]))
 
-                var now = new Date()
-                if (endDate > now) {
-                    var endSecs = endDate.getTime()
-                    var nowSecs = now.getTime();
-                    var timeSpan = endSecs - nowSecs
-                    var raid = new Raid(message.id, raidTitle, [], endDate)
-                    setTimeout(this.createRaidResponseMessage, timeSpan, message, raid)
-                    this.raids.push(raid);
+            var now = new Date()
+            if (date > now) {
+                var endSecs = date.getTime()
+                var nowSecs = now.getTime();
+                var timeSpan = endSecs - nowSecs
+                var raid = new Raid(message.id, commandArguments.join(" "), [], date, new Player(startedBy.id, startedBy.username))
+                setTimeout(this.createRaidResponseMessage, timeSpan, message, raid)
+                this.raids.push(raid); // create the raid
 
-                    retVal = PokeBotErrors.UNDEFINED
-                } else {
-                    retVal = PokeBotErrors.WRONG_DATE
-                }
+                retVal = PokeBotErrors.UNDEFINED
             } else {
                 retVal = PokeBotErrors.WRONG_DATE
             }
+
         } catch (error) {
             console.log(error)
             retVal = PokeBotErrors.UNKNOWN
@@ -126,7 +107,7 @@ export class PokeBotRaidManager {
             description += `\n\n${raid.closed ? "🔒 Raid is gesloten 🔒" : raidingInfo}`
 
             let richEmbed = new RichEmbed()
-                .setTitle(raid.messageTitle)
+                .setTitle(raid.messageTitle + message.author.username)
                 .setDescription(description)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
                 .setColor(raid.closed ? "#ff0000" : "#31d32b")

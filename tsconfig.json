@@ -67,6 +67,6 @@
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */
   },
   "include": [
-    "./src/**/*", "server.ts", "sqlDb.ts", "./resources/*"
+    "./src/**/*"
   ]
 }

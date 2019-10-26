@@ -5,9 +5,8 @@
 	"main": "bot.js",
 	"scripts": {
 		"buildstart": "tsc && node lib/bot.js",
-		"build":"tsc",
-		"start": "node lib/bot.js",
-		"start2": "node lib/bot2.js"
+		"build": "tsc",
+		"start": "set APP_SETTING_TOKEN=NjIzODI4MDcwMDYyNjIwNjcz.Xa896w.o6fZa3u3VoHAdJA-BLtKBv-Z6UY && node lib/bot.js"
 	},
 	"author": "Mike Pattyn",
 	"dependencies": {
@@ -18,7 +17,7 @@
 		"debug": "^4.1.1",
 		"discord-message-handler": "^2.0.1",
 		"discord.js": "^11.5.1",
-		"dotenv": "^8.1.0",
+		"dotenv": "^8.2.0",
 		"inversify": "^5.0.1",
 		"mssql": "^5.1.0",
 		"node": "^12.10.0",

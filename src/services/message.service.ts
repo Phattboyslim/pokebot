@@ -1,15 +1,17 @@
-import { IMessageService } from "../interfaces/IMessageService";
+import { IMessageService } from "../interfaces/messag.service.interface";
 import { Message, RichEmbed } from "discord.js";
 import { isNullOrUndefined } from "util";
 import { injectable } from "inversify";
 import "reflect-metadata"
+import { ChannelIds } from "../models/channelIds.enum";
 
 const botId = '623828070062620673'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
+const allowedChannels: string[] = [ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
 const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
 @injectable()
 export class MessageService implements IMessageService {
-    private message: Message | null = null
+    public message: Message | null = null
 
     setMessage(message: Message) {
         this.message = message
@@ -29,7 +31,7 @@ export class MessageService implements IMessageService {
         var response = ""
         this.message!.delete();
         // set the raids to only work in specific channels
-        if (["631914851710533642", "631624476173533184", "631726419243696128"].some(x => x === this.message!.channel.id)) {
+        if (allowedChannels.some(x => x === this.message!.channel.id)) {
             let richEmbed = new RichEmbed()
                 .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
                 .setDescription(raidingInfo)
@@ -41,23 +43,6 @@ export class MessageService implements IMessageService {
             response = "This command only works in raid channels\n"
             this.message!.author.send(response);
         }
-    }
-
-    handleHelpRequest() {
-        var response = "Vroaget an mi aj ulpe nodig et 😂😂😂😂";
-        this.message!.author.send(response);
-        this.message!.delete();
-    }
-
-    async handlePurgeRequest() {
-        await this.message!.channel.fetchMessages({ limit: Number(this.message!.content.split(' ')[3].substring(1)) }).then(messages => {
-            var filterMessages = messages.filter(x => x.content.indexOf("🗡️") == -1)
-            filterMessages.forEach(async msg => {
-                if (msg.author.id != botId) {
-                    await msg.delete()
-                }
-            })
-        })
     }
 
     async handleRankRequest() {
@@ -86,17 +71,6 @@ export class MessageService implements IMessageService {
         var nickNameArguments = name.split('|')
         nickNameArguments[3] = (Number(nickNameArguments[3]) + 1).toString()
         this.message!.guild.members.get(this.message!.author.id)!.setNickname(`${nickNameArguments.join('|')}`)
-
-    }
-
-    handleSetChannelTopic() {
-        this.message!.guild.channels.filter(chan => chan.id === this.message!.channel.id).first().setTopic(this.commandArguments.slice(2).join(" "));
-    }
-
-    async handleSetPinnedMessage() {
-        var content = `📌 ${this.commandArguments.slice(2).join(" ")} `
-        await this.message!.delete();
-        await this.message!.channel.send(content)
     }
 }
 export enum RankEmoji {
