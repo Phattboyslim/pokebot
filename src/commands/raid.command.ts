@@ -17,7 +17,7 @@ export class RaidCommand {
                 var raidService: RaidService = dependencyInjectionContainer.get(RaidService)
                 let embeds = messageService.message!.embeds
                 if (embeds && embeds.length > 0 && embeds[0].title.indexOf("🗡️") > -1) {
-                   var createdRaidResult = await raidService.createRaid(messageService.message!, embeds[0].title.split(" "), message.author)
+                   var createdRaidResult = await raidService.createRaid(messageService.message!, embeds[0].title.split(" "), message)
                    switch(createdRaidResult) {
                        case PokeBotErrors.UNDEFINED: {
                     

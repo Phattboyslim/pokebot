@@ -35,4 +35,7 @@ export class Raid implements IRaid {
     static RaidCommandInvalidErrorMessage(){
         return "Invalid command. Usage: !raid start <T1-5> <1-4 words describing place / area> <24h-time>"
     }
+    static RaidTimeRegularExpression() {
+        return "(\\b([0-9]|1[0-9]|2[0-3])\\b)(\\:)(0*([1-9]|[1-4][0-9]|5[0-9]))"
+    }
 }

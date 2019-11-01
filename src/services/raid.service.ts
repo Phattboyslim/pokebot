@@ -43,21 +43,27 @@ export class RaidService {
         this.getRaid(reaction.message.id)
             .players.push(new Player(user.id, reaction.message.guild.members.get(user.id)!.displayName));
     }
-
-    createRaid(message: Message, commandArguments: string[], startedBy: User): PokeBotErrors {
+    getPosition(string: string, subString: string, index: number) {
+        return string.split(subString, index).join(subString).length;
+    }
+    createRaid(message: Message, commandArguments: string[], startedBy: Message): PokeBotErrors {
         var retVal = PokeBotErrors.UNKNOWN // expected error if user enters wrong date
         try {
-            var timeArgument = commandArguments[commandArguments.length - 2].toLowerCase()
+
+            var timeArgument = commandArguments.join(" ").match("\\d{2}:\\d{2}")
+            if(!timeArgument || timeArgument.length != 1) {
+                return PokeBotErrors.WRONG_DATE
+            }
             var date = new Date()
-            date.setHours(Number(timeArgument.split(":")[0]))
-            date.setMinutes(Number(timeArgument.split(":")[1]))
+            date.setHours(Number(timeArgument[0].split(":")[0]))
+            date.setMinutes(Number(timeArgument[0].split(":")[1]))
 
             var now = new Date()
             if (date > now) {
                 var endSecs = date.getTime()
                 var nowSecs = now.getTime();
                 var timeSpan = endSecs - nowSecs
-                var raid = new Raid(message.id, commandArguments.join(" "), [], date, new Player(startedBy.id, startedBy.username))
+                var raid = new Raid(message.id, commandArguments.join(" "), [], date, new Player(startedBy.id, this.findDisplayName(startedBy)))
                 setTimeout(this.createRaidResponseMessage, timeSpan, message, raid)
                 this.raids.push(raid); // create the raid
 
@@ -107,24 +113,13 @@ export class RaidService {
             description += `\n\n${raid.closed ? "🔒 Raid is gesloten 🔒" : raidingInfo}`
 
             let richEmbed = new RichEmbed()
-                .setTitle(raid.messageTitle + message.author.username)
+                .setTitle(raid.messageTitle)
                 .setDescription(description)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
                 .setColor(raid.closed ? "#ff0000" : "#31d32b")
 
             await message.edit(richEmbed);
         }
-
-        // var raidWithPlayersString = '';
-        // this.raids.forEach((raid: IRaid) => {
-        //     if (raid.messageId === reaction.message.id) {
-        //         raidWithPlayersString += `${raid.messageTitle}`;
-        //         raid.players.forEach((player: IPlayer) => {
-        //             raidWithPlayersString += `\n${player.name}`;
-        //             raidWithPlayersString += player.additions > 0 ? ` +${player.additions}` : '';
-        //         });
-        //     }
-        // });
     }
 }
 

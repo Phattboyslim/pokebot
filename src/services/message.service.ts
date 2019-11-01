@@ -4,6 +4,7 @@ import { isNullOrUndefined } from "util";
 import { injectable } from "inversify";
 import "reflect-metadata"
 import { ChannelIds } from "../models/channelIds.enum";
+import { Raid } from "../models/raid.class";
 
 const botId = '623828070062620673'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
@@ -26,14 +27,16 @@ export class MessageService implements IMessageService {
             .split(' ')
             .filter(Boolean)
     }
-
+    findDisplayName(message: Message) {
+        return message.guild.members.find(x => x.id === message.author.id).displayName;
+    }
     async handleRaidStart() {
         var response = ""
         this.message!.delete();
         // set the raids to only work in specific channels
         if (allowedChannels.some(x => x === this.message!.channel.id)) {
             let richEmbed = new RichEmbed()
-                .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
+                .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️ Started by: ${this.findDisplayName(this.message!)}`)
                 .setDescription(raidingInfo)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
                 .setColor("#31d32b")
