@@ -11,11 +11,11 @@ export class CounterCommand {
         handler.onCommand("!counters")
             .minArgs(1)
             .whenInvalid(Infra.WrongCounterCommand())
-            .do((args: string[], rawArgs: string, message: Message) => {
+            .do(async (args: string[], rawArgs: string, message: Message) => {
                 var pokemonService = dependencyInjectionContainer.get(PokemonService)
                 let messageService: MessageService = dependencyInjectionContainer.get(MessageService)
                 if(args.length == 1) {
-                    var searchResult = pokemonService.searchPokemonCounter(args[0])
+                    var searchResult: any = await pokemonService.searchPokemonCounter(args[0])
                     if(!isNull(searchResult)  && searchResult.length > 0) {
                         messageService.handlePokemonCounterMessage(searchResult[0]) // take first
                     } else {

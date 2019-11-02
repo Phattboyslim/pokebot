@@ -5,6 +5,7 @@ import { Player } from '../models/player.class'
 import { Raid } from '../models/raid.class'
 import { injectable } from 'inversify'
 import "reflect-metadata"
+import { isNullOrUndefined } from 'util';
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 const raidingInfo = `Reageer met 👍 om je aan de lijst toe te voegen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
@@ -13,7 +14,7 @@ const raidingInfo = `Reageer met 👍 om je aan de lijst toe te voegen\nReageer 
 export class RaidService {
 
     raids: IRaid[] = [];
-
+    
     constructor() {
     }
     getUser(messageId: string, userId: string) {
@@ -51,7 +52,7 @@ export class RaidService {
         try {
 
             var timeArgument = commandArguments.join(" ").match("\\d{2}:\\d{2}")
-            if(!timeArgument || timeArgument.length != 1) {
+            if (!timeArgument || timeArgument.length != 1) {
                 return PokeBotErrors.WRONG_DATE
             }
             var date = new Date()
@@ -63,7 +64,7 @@ export class RaidService {
                 var endSecs = date.getTime()
                 var nowSecs = now.getTime();
                 var timeSpan = endSecs - nowSecs
-                var raid = new Raid(message.id, commandArguments.join(" "), [], date, new Player(startedBy.id, this.findDisplayName(startedBy)))
+                var raid = new Raid(message.id, commandArguments.join(" "), [], date, new Player(startedBy.author.id, this.findDisplayName(startedBy)))
                 setTimeout(this.createRaidResponseMessage, timeSpan, message, raid)
                 this.raids.push(raid); // create the raid
 
@@ -102,23 +103,21 @@ export class RaidService {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
     }
     async createRaidResponseMessage(message: Message, raid: IRaid) {
+        let embeds = message.embeds
+        if (!isNullOrUndefined(message.embeds) && !isNullOrUndefined(raid)) {
+            if (embeds.length == 1 && embeds[0].title == raid.messageTitle) {
+                var description = ""
+                raid.players.forEach((player: IPlayer) => {
+                    description += `\n${player.name}`;
+                    description += player.additions > 0 ? ` +${player.additions}` : '';
+                });
 
-        if (raid != null) {
-            var description = ""
-            raid.players.forEach((player: IPlayer) => {
-                description += `\n${player.name}`;
-                description += player.additions > 0 ? ` +${player.additions}` : '';
-            });
+                description += `\n\n${raid.closed ? "🔒 Raid is gesloten 🔒" : raidingInfo}`
 
-            description += `\n\n${raid.closed ? "🔒 Raid is gesloten 🔒" : raidingInfo}`
+                let richEmbed = new RichEmbed(embeds[0]).setDescription(description)
 
-            let richEmbed = new RichEmbed()
-                .setTitle(raid.messageTitle)
-                .setDescription(description)
-                .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
-                .setColor(raid.closed ? "#ff0000" : "#31d32b")
-
-            await message.edit(richEmbed);
+                await message.edit(richEmbed);
+            }
         }
     }
 }

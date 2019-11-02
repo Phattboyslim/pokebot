@@ -4,12 +4,13 @@ import { isNullOrUndefined } from "util";
 import { injectable } from "inversify";
 import "reflect-metadata"
 import { ChannelIds } from "../models/channelIds.enum";
-import { Raid } from "../models/raid.class";
 import { PokemonCounter } from "./pokemon.service";
+import { IRaid } from "../interfaces/raid.interface";
+import { IPlayer } from "../interfaces/player.interface";
 
 const botId = '623828070062620673'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
-const allowedChannels: string[] = [ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
+const allowedRaidChannels: string[] = [ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
 const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
 @injectable()
 export class MessageService implements IMessageService {
@@ -31,24 +32,48 @@ export class MessageService implements IMessageService {
     findDisplayName(message: Message) {
         return message.guild.members.find(x => x.id === message.author.id).displayName;
     }
+    findDisplayAvatar(message: Message) {
+        return message.guild.members.find(x => x.id === message.author.id).user.avatarURL ? message.guild.members.find(x => x.id === message.author.id).user.avatarURL : "https://www.shareicon.net/data/128x128/2015/09/21/644252_question_512x512.png"
+    }
+    findDisplayUserRoleColor(message: Message) {
+        return message.guild.members.find(x => x.id === message.author.id).colorRole.hexColor
+    }
     async handleRaidStart() {
         var response = ""
         this.message!.delete();
         // set the raids to only work in specific channels
-        if (allowedChannels.some(x => x === this.message!.channel.id)) {
-            let richEmbed = new RichEmbed()
-                .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️ Started by: ${this.findDisplayName(this.message!)}`)
+        if (allowedRaidChannels.some(x => x === this.message!.channel.id)) {
+                let richEmbed = new RichEmbed()
+                .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
+                .setTimestamp()
+                .setFooter(`${this.findDisplayName(this.message!)}`, `${ this.findDisplayAvatar(this.message!)}`)
                 .setDescription(raidingInfo)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
-                .setColor("#31d32b")
-
+                .setColor(this.findDisplayUserRoleColor(this.message!))
             await this.message!.channel.send(richEmbed);
         } else {
             response = "This command only works in raid channels\n"
             this.message!.author.send(response);
         }
     }
+    async createRaidResponseMessage(message: Message, raid: IRaid) {
+        let embeds = message.embeds
+        if (!isNullOrUndefined(message.embeds) && !isNullOrUndefined(raid)) {
+            if (embeds.length == 1 && embeds[0].title == raid.messageTitle) {
+                var description = ""
+                raid.players.forEach((player: IPlayer) => {
+                    description += `\n${player.name}`;
+                    description += player.additions > 0 ? ` +${player.additions}` : '';
+                });
 
+                description += `\n\n${raid.closed ? "🔒 Raid is gesloten 🔒" : raidingInfo}`
+
+                let richEmbed = new RichEmbed(embeds[0]).setDescription(description)
+
+                await message.edit(richEmbed);
+            }
+        }
+    }
     async handlePokemonCounterMessage(data: PokemonCounter) {
         var response = ""
         this.message!.delete();
@@ -112,3 +137,4 @@ export class EmojiHelper {
         }
     }
 }
+
