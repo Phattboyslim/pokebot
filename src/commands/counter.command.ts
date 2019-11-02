@@ -8,7 +8,7 @@ import { isNull } from "util";
 
 export class CounterCommand {
     static setup(handler: MessageHandler) {
-        handler.onCommand("!counter")
+        handler.onCommand("!counters")
             .minArgs(1)
             .whenInvalid(Infra.WrongCounterCommand())
             .do((args: string[], rawArgs: string, message: Message) => {
