@@ -7,6 +7,7 @@ import { RaidCommand } from "../commands/raid.command";
 import { RegisterRankCommand } from "../commands/register.command";
 import { isNullOrUndefined } from "util";
 import { ChannelIds } from "../models/channelIds.enum";
+import { CounterCommand } from "../commands/counter.command";
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
 
 export class DiscordClient {
@@ -21,6 +22,7 @@ export class DiscordClient {
     constructor(token: any) {
         RaidCommand.setup(this.handler)
         RegisterRankCommand.setup(this.handler)
+        CounterCommand.setup(this.handler)
         this.token = token
     }
 

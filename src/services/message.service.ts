@@ -5,6 +5,7 @@ import { injectable } from "inversify";
 import "reflect-metadata"
 import { ChannelIds } from "../models/channelIds.enum";
 import { Raid } from "../models/raid.class";
+import { PokemonCounter } from "./pokemon.service";
 
 const botId = '623828070062620673'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
@@ -46,6 +47,27 @@ export class MessageService implements IMessageService {
             response = "This command only works in raid channels\n"
             this.message!.author.send(response);
         }
+    }
+
+    async handlePokemonCounterMessage(data: PokemonCounter) {
+        var response = ""
+        this.message!.delete();
+        data.counters.forEach(x=> {
+            response += `${x.name}\nAttacks: ${x.attacks.join(" & ")}\n\n`
+        })
+        // set the raids to only work in specific channels
+        // if (allowedChannels.some(x => x === this.message!.channel.id)) {
+            let richEmbed = new RichEmbed()
+                .setTitle(`Counters for ${data.name}`)
+                .setDescription(response)
+                .setThumbnail(data.thumbnail)
+                .setColor("#31d32b")
+
+            await this.message!.channel.send(richEmbed);
+        // } else {
+        //     response = "This command only works in raid channels\n"
+        //     this.message!.author.send(response);
+        // }
     }
 
     async handleRankRequest() {
