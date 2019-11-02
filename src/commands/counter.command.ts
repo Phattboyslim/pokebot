@@ -14,7 +14,6 @@ export class CounterCommand {
             .do((args: string[], rawArgs: string, message: Message) => {
                 var pokemonService = dependencyInjectionContainer.get(PokemonService)
                 let messageService: MessageService = dependencyInjectionContainer.get(MessageService)
-                var ok = false
                 if(args.length == 1) {
                     var searchResult = pokemonService.searchPokemonCounter(args[0])
                     if(!isNull(searchResult)  && searchResult.length > 0) {
