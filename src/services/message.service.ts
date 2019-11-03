@@ -1,3 +1,5 @@
+import { EmojiHelper } from "../helpers/emoji.helper";
+
 import { IMessageService } from "../interfaces/messag.service.interface";
 import { Message, RichEmbed } from "discord.js";
 import { isNullOrUndefined } from "util";
@@ -43,10 +45,10 @@ export class MessageService implements IMessageService {
         this.message!.delete();
         // set the raids to only work in specific channels
         if (allowedRaidChannels.some(x => x === this.message!.channel.id)) {
-                let richEmbed = new RichEmbed()
+            let richEmbed = new RichEmbed()
                 .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
                 .setTimestamp()
-                .setFooter(`${this.findDisplayName(this.message!)}`, `${ this.findDisplayAvatar(this.message!)}`)
+                .setFooter(`${this.findDisplayName(this.message!)}`, `${this.findDisplayAvatar(this.message!)}`)
                 .setDescription(raidingInfo)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
                 .setColor(this.findDisplayUserRoleColor(this.message!))
@@ -74,21 +76,36 @@ export class MessageService implements IMessageService {
             }
         }
     }
-    async handlePokemonCounterMessage(data: PokemonCounter) {
-        var response = ""
+    async handlePokemonCounterListMessage(list: string) {
         this.message!.delete();
-        data.counters.forEach(x=> {
-            response += `${x.name}\nAttacks: ${x.attacks.join(" & ")}\n\n`
-        })
         // set the raids to only work in specific channels
         // if (allowedChannels.some(x => x === this.message!.channel.id)) {
-            let richEmbed = new RichEmbed()
-                .setTitle(`Counters for ${data.name}`)
-                .setDescription(response)
-                .setThumbnail(data.thumbnail)
-                .setColor("#31d32b")
 
-            await this.message!.channel.send(richEmbed);
+        let richEmbed = new RichEmbed()
+            .setTitle(`Counters i have in my system`)
+            .setDescription(list)
+        await this.message!.channel.send(richEmbed);
+
+    }
+    async handlePokemonCounterMessage(data: PokemonCounter) {
+        this.message!.delete();
+        // set the raids to only work in specific channels
+        // if (allowedChannels.some(x => x === this.message!.channel.id)) {
+
+        let richEmbed = new RichEmbed()
+            .setTitle(`Counters for ${data.name}`)
+            .setThumbnail(data.thumbnail)
+            .setColor("#31d32b")
+        data.counters.forEach((x) => {
+            var attackstring = ""
+            x.attacks.forEach(xy => {
+                var emoji = this.message!.channel.client.emojis.find(emoji => emoji.name == `Icon_${xy[1]}`)
+                attackstring += emoji + " " + xy[0] + "\n"
+            })
+            richEmbed.addField(x.name, `${attackstring}`, true)
+        })
+
+        await this.message!.channel.send(richEmbed);
         // } else {
         //     response = "This command only works in raid channels\n"
         //     this.message!.author.send(response);
@@ -121,20 +138,6 @@ export class MessageService implements IMessageService {
         var nickNameArguments = name.split('|')
         nickNameArguments[3] = (Number(nickNameArguments[3]) + 1).toString()
         this.message!.guild.members.get(this.message!.author.id)!.setNickname(`${nickNameArguments.join('|')}`)
-    }
-}
-export enum RankEmoji {
-    "valor" = "🔥",
-    "mystic" = "💧",
-    "instinct" = "⚡"
-}
-export class EmojiHelper {
-    static getEmoji(name: string) {
-        switch (name) {
-            case "valor": return RankEmoji.valor
-            case "mystic": return RankEmoji.mystic
-            case "instinct": return RankEmoji.instinct
-        }
     }
 }
 
