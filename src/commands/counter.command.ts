@@ -4,7 +4,7 @@ import { Message } from "discord.js";
 import { PokemonService } from "../services/pokemon.service";
 import { dependencyInjectionContainer } from "../di-container";
 import { MessageService } from "../services/message.service";
-import { isNull } from "util";
+import { isNull, isNullOrUndefined } from "util";
 
 export class CounterCommand {
     static setup(handler: MessageHandler) {
@@ -15,12 +15,22 @@ export class CounterCommand {
                 var pokemonService = dependencyInjectionContainer.get(PokemonService)
                 let messageService: MessageService = dependencyInjectionContainer.get(MessageService)
                 if(args.length == 1) {
-                    var searchResult: any = await pokemonService.searchPokemonCounter(args[0])
-                    if(!isNull(searchResult)  && searchResult.length > 0) {
-                        messageService.handlePokemonCounterMessage(searchResult[0]) // take first
+                    if(args[0] == "list") {
+                        var countersList = await pokemonService.getCountersList()
+                        if(!isNullOrUndefined(countersList)){
+                            messageService.handlePokemonCounterListMessage(countersList)
+                        } else {
+                            message.delete()
+                            message.channel.send("Couldnt recognize that command")
+                        }
                     } else {
-                        message.delete()
-                        message.channel.send("Couldnt find that pokemon")
+                        var searchResult: any = await pokemonService.searchPokemonCounter(args[0])
+                        if(!isNull(searchResult)  && searchResult.length > 0) {
+                            messageService.handlePokemonCounterMessage(searchResult[0]) // take first
+                        } else {
+                            message.delete()
+                            message.channel.send("Couldnt find that pokemon")
+                        }
                     }
                 } else if (args.length == 2) {
                     message.channel.send("Not implemented")
