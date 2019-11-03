@@ -15,7 +15,11 @@ export class RegisterRankCommand {
                 var botUser = message.guild.members.filter(x => x.id === botId).first()
                 if (botUser.hasPermission("MANAGE_NICKNAMES") && botUser.hasPermission("MANAGE_ROLES") && botUser.hasPermission("CHANGE_NICKNAME")) {
                     let messageService: MessageService = dependencyInjectionContainer.get(MessageService)
-                    messageService.handleRankRequest();
+                    if(args[0] == "levelup") {
+                        messageService.handleLevelUpRequest()
+                    } else {
+                        messageService.handleRankRequest();
+                    }
                 }
             })
     }
