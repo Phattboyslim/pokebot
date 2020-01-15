@@ -14,7 +14,7 @@ export class Player implements IPlayer {
         this.additions = 0;
     }
     static RegisterRankCommandRegularExpression() {
-        return "(register\\s)((instinct|Instinct|mystic|Mystic|valor|Valor)( \\w+){2}\s(\\b([0-9]|1[0-9]|2[0-3])\\b))|(levelup)"
+        return "(register\\s)(instinct|Instinct|mystic|Mystic|valor|Valor)( \\w+){2}(\\s)(\\d{1,2})"
     }
     static RegisterRankCommandInvalidMessage(){
         return "Invalid command. Usage: !register <instinct|mystic|valor> <firstname> <pokemon-go name> <level 1-40>"

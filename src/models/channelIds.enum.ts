@@ -1,5 +1,7 @@
 export enum ChannelIds {
-    Welcome = "632880237964951572",
-    RaidRoeselare = "631624476173533184",
-    RaidIzegem = "632908743964884994"
+    Welcome = "655413036491866113",
+    RaidRoeselare = "655414549939224598",
+    RaidIzegem = "655414595846012928",
+    RaidHooglede = "655414620793602058",
+    RaidOekene = "655414641031249941"
 }

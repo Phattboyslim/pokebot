@@ -10,7 +10,7 @@ import { PokemonCounter } from "./pokemon.service";
 import { IRaid } from "../interfaces/raid.interface";
 import { IPlayer } from "../interfaces/player.interface";
 
-const botId = '623828070062620673'
+const botId = '655411751709310999'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 const allowedRaidChannels: string[] = [ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
 const raidingInfo = `Reageer met 👍 om te joinen\nReageer met:\n${additionsEmojis.join(' ')}\nom aan te geven dat je extra accounts of spelers mee hebt.`
@@ -38,7 +38,14 @@ export class MessageService implements IMessageService {
         return message.guild.members.find(x => x.id === message.author.id).user.avatarURL ? message.guild.members.find(x => x.id === message.author.id).user.avatarURL : "https://www.shareicon.net/data/128x128/2015/09/21/644252_question_512x512.png"
     }
     findDisplayUserRoleColor(message: Message) {
-        return message.guild.members.find(x => x.id === message.author.id).colorRole.hexColor
+        var member = message.guild.members.find(x => x.id === message.author.id)
+        if(!isNullOrUndefined(member)) {
+            var colorRole = member.colorRole
+            if(!isNullOrUndefined(colorRole)){
+                return colorRole.hexColor
+            }
+        }
+        return "#0084FF"
     }
     async handleRaidStart() {
         var response = ""

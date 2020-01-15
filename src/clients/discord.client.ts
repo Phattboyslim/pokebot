@@ -8,6 +8,8 @@ import { RegisterRankCommand } from "../commands/register.command";
 import { isNullOrUndefined } from "util";
 import { ChannelIds } from "../models/channelIds.enum";
 import { CounterCommand } from "../commands/counter.command";
+import { JoinCommand } from "../commands/join.command"
+import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
 
 export class DiscordClient {
@@ -23,6 +25,7 @@ export class DiscordClient {
         RaidCommand.setup(this.handler)
         RegisterRankCommand.setup(this.handler)
         CounterCommand.setup(this.handler)
+        JoinCommand.setup(this.handler)
         this.token = token
     }
 
@@ -40,9 +43,26 @@ export class DiscordClient {
     }
     onMessage() {
         this.client.on('message', async (message: Message) => {
-            this.messageService.setMessage(message)
-            if (allowedChannels.some(x => x === message.channel.id)) {
-                await this.handler.handleMessage(message)
+            if (message.type === "GUILD_MEMBER_JOIN") {
+                var guildMemberId = message.author.id
+                if (!isNullOrUndefined(guildMemberId)) {
+                    var fakeMessage = message
+                    fakeMessage.content = "GUILD_MEMBER_JOIN"
+                    this.messageService.setMessage(fakeMessage)
+                    if (allowedChannels.some(x => x === message.channel.id)) {
+                        await this.handler.handleMessage(message)
+                    }
+                }
+            } else if (message.type === "DEFAULT") {
+                if(message.content.indexOf("testImg") > -1) {
+                    var client = new GoogleCloudClient()
+                    client.readImage()
+                } else {
+                    this.messageService.setMessage(message)
+                    if (allowedChannels.some(x => x === message.channel.id)) {
+                        await this.handler.handleMessage(message)
+                    }
+                }
             }
         })
     }

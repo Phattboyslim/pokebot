@@ -3,7 +3,7 @@ import { Message } from 'discord.js';
 import { Player } from '../models/player.class';
 import { MessageService } from '../services/message.service';
 import { dependencyInjectionContainer } from '../di-container';
-const botId = '623828070062620673'
+const botId = '655411751709310999'
 
 export class RegisterRankCommand {
     static setup(handler: MessageHandler) {
