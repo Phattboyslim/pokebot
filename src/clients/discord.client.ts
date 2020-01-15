@@ -11,7 +11,7 @@ import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
-
+const token = process.env.BOT_TOKEN
 export class DiscordClient {
 
     client: Client = new Client()
@@ -20,17 +20,15 @@ export class DiscordClient {
     messageService: MessageService = dependencyInjectionContainer.get(MessageService)
 
     channels: TextChannel[] = []
-    private token: any
-    constructor(token: any) {
+    constructor() {
         RaidCommand.setup(this.handler)
         RegisterRankCommand.setup(this.handler)
         CounterCommand.setup(this.handler)
         JoinCommand.setup(this.handler)
-        this.token = token
     }
 
     login() {
-        this.client.login(this.token)
+        this.client.login(token)
     }
     onReady() {
         this.client.on('ready', async () => {
