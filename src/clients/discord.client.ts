@@ -11,7 +11,7 @@ import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
-const token = process.env.BOT_TOKEN
+
 export class DiscordClient {
 
     client: Client = new Client()
@@ -28,7 +28,7 @@ export class DiscordClient {
     }
 
     login() {
-        this.client.login(token)
+        this.client.login(process.env.BOT_TOKEN)
     }
     onReady() {
         this.client.on('ready', async () => {
