@@ -35,6 +35,7 @@ export class DiscordClient {
             console.log(`Logged in as ${this.client.user.tag}!`)
             var channel = this.getChannelById(ChannelIds.Welcome) as TextChannel
             if (!isNullOrUndefined(channel)) {
+                channel.sendMessage()
                 this.channels.push(channel)
             }
         })
@@ -55,7 +56,13 @@ export class DiscordClient {
                 if(message.content.indexOf("testImg") > -1) {
                     var client = new GoogleCloudClient()
                     client.readImage()
-                } else {
+                } else if(message.attachments.keys.length > 0){
+                    const fs = require('fs');
+                    message.attachments.forEach(a => {
+                        fs.writeFileSync(`./${a.filename}`, a.message); // Write the file to the system synchronously.
+                    });
+                }
+                else {
                     this.messageService.setMessage(message)
                     if (allowedChannels.some(x => x === message.channel.id)) {
                         await this.handler.handleMessage(message)
