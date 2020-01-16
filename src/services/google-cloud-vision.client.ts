@@ -12,7 +12,7 @@ export class GoogleCloudClient {
 
     async readImage() {
         const fileName = 'Local image file, e.g. /path/to/image.png';
-        const [result] = await this.client.textDetection("src/services/testImg.png");
+        const [result] = await this.client.textDetection("src/services/pokemon.png");
         const detections = result.textAnnotations;
         const result2 = detections[0].description.split('\n')
         console.log(result2)
