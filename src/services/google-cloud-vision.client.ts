@@ -14,7 +14,9 @@ export class GoogleCloudClient {
         const fileName = 'Local image file, e.g. /path/to/image.png';
         const [result] = await this.client.textDetection("src/services/testImg.png");
         const detections = result.textAnnotations;
-        let info = new PokestopInfo(detections[0].description.split('\n'));
+        const result2 = detections[0].description.split('\n')
+        console.log(result2)
+        let info = new PokestopInfo(result2);
         console.log(info)
     }
         
