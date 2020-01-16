@@ -14,18 +14,37 @@ export class GoogleCloudClient {
         const fileName = 'Local image file, e.g. /path/to/image.png';
         const [result] = await this.client.textDetection("src/services/testImg.png");
         const detections = result.textAnnotations;
-        let info = detections[0].description.split('\n') as PokestopInfo;
+        let info = new PokestopInfo(detections[0].description.split('\n'));
         console.log(info)
     }
         
 }
 
-export interface PokestopInfo {
-    time: Date
-    titel: string
-    description: string
-    misc: string
-    distance_alert: string
+export interface IPokestopInfo {
+    time: Date | null
+    titel: string | null
+    description: string | null
+    misc: string | null
+    distance_alert: string | null
+    unkown: any
+}
+
+export class PokestopInfo implements IPokestopInfo {
+    time: Date | null = null
+    titel: string | null = null
+    description: string | null = null
+    misc: string | null = null
+    distance_alert: string | null = null
+    unkown: any | null = null
+
+    constructor(info: IPokestopInfo) {
+        this.time = info.time
+        this.titel = info.titel
+        this.description = info.description
+        this.misc = info.misc
+        this.distance_alert = info.distance_alert
+        this.unkown = info.unkown
+    }
 }
 
   
