@@ -23,7 +23,7 @@ export class GoogleCloudClient {
 }
 
 export interface IPokestopInfo {
-    time: Date | null
+    time: string | null
     titel: string | null
     description: string | null
     misc: string | null
@@ -32,20 +32,20 @@ export interface IPokestopInfo {
 }
 
 export class PokestopInfo implements IPokestopInfo {
-    time: Date | null = null
+    time: string | null = null
     titel: string | null = null
     description: string | null = null
     misc: string | null = null
     distance_alert: string | null = null
     unkown: any | null = null
 
-    constructor(info: IPokestopInfo) {
-        this.time = info.time
-        this.titel = info.titel
-        this.description = info.description
-        this.misc = info.misc
-        this.distance_alert = info.distance_alert
-        this.unkown = info.unkown
+    constructor(info: string[]) {
+        this.time = info[0]
+        this.titel = info[1]
+        this.description = info[2]
+        this.misc = info[3]
+        this.distance_alert = info[4]
+        this.unkown = info[5]
     }
 }
 
