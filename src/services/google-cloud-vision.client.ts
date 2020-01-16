@@ -14,11 +14,8 @@ export class GoogleCloudClient {
         const fileName = 'Local image file, e.g. /path/to/image.png';
         const [result] = await this.client.textDetection("src/services/testImg.png");
         const detections = result.textAnnotations;
-        console.log('Text:');
-        detections.forEach((text: any) => {
-            console.log("Ah yeet",text);
-        });
-    }
+        console.log('Text:', detections[0]);
+        
 }
 
 
