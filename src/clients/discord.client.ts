@@ -61,20 +61,16 @@ export class DiscordClient {
                     } else {
                         console.log("Warning: Something gone wrong reading text from the image")
                     }
-                } else if(message.content.indexOf("testUpload") > -1){
-                    console.log("Info: UPLOAD - ", message.attachments)
+                } else if(message.content.indexOf("uploadRaid") > -1) {
+                    var attachment = message.attachments.first();
                     var client = new GoogleCloudClient();
-                    var predictionResult = await client.readImageML();
+                    var predictionResult = await client.readImageML(attachment.url);
                     if(!isNullOrUndefined(predictionResult)) {
                         console.log("Number of tiers found: ", predictionResult.payload.filter((x: any)=>x.displayName === "tier").length)
                     } else {
                         console.log("Warning: prediction result is empty");
                     }
-                } else if(message.content.indexOf("uploadRaid") > -1) {
-                    var attachment = message.attachments.first();
-                    console.log(attachment.url);
-                }
-                else {
+                } else {
                     this.messageService.setMessage(message)
                     if (allowedChannels.some(x => x === message.channel.id)) {
                         await this.handler.handleMessage(message)
