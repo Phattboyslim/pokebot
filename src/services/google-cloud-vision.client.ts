@@ -30,8 +30,8 @@ export class GoogleCloudClient {
 
         const projectId = `647554061248`;
         const computeRegion = `us-central1`;
-        const modelId = `IOD6596520010842112000`;
-
+        // const modelId = `IOD6596520010842112000`;
+        const modelId = "IOD978842425650839552";
         // Get the full path of the model.
         const modelFullId = client.modelPath(projectId, computeRegion, modelId);
 
