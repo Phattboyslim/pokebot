@@ -71,12 +71,12 @@ export class GoogleCloudClient {
             })
             .then((response: any) => Buffer.from(response.data, 'binary'))
             
-        var binary_string = atob(base64);
-        var len = binary_string.length;
-        var bytes = new Uint8Array(len);
-        for (var i = 0; i < len; i++) {
-            bytes[i] = binary_string.charCodeAt(i);
-        }
+        // var binary_string = atob(base64);
+        // var len = binary_string.length;
+        // var bytes = new Uint8Array(len);
+        // for (var i = 0; i < len; i++) {
+        //     bytes[i] = binary_string.charCodeAt(i);
+        // }
 
         var content = base64
         // var content = await fs.readFileSync(url);;
