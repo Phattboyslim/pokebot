@@ -13,10 +13,10 @@ export class GoogleCloudClient {
     async readImage() {
         const [result] = await this.client.textDetection("src/services/pokemon.png");
         const detections = result.textAnnotations;
-        const result2 = detections[0].description.split('\n')
-        if(result2.any((x: string) => x.indexOf("Gym") > -1)){
+        const result2: string[] = detections[0].description.split('\n')
+        if(result2.some((x: string) => x.indexOf("Gym") > -1)){
             console.log("Gym scanned")
-        } else if (result2.any((x: string) => x.indexOf("stop") > -1)){
+        } else if (result2.some((x: string) => x.indexOf("stop") > -1)){
             console.log("Pokestop scanned")
         } else {
             console.log("Something else scanned")
