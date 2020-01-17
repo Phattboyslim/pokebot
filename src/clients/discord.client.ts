@@ -54,29 +54,26 @@ export class DiscordClient {
                 }
             } else if (message.type === "DEFAULT") {
                 if (message.content.indexOf("testImg") > -1) {
+                    var returnMessage = "Ti etwa hjil skjif gegoan"
                     var client = new GoogleCloudClient()
                     var attachment = message.attachments.first();
-                    var result = await client.readImage(attachment.url)
-                    if (!isNullOrUndefined(result)) {
-                        var predictionResult = await client.readImageML(attachment.url);
-                        if (!isNullOrUndefined(predictionResult)) {
-                            var tiers = `Tiers: ${predictionResult.payload.filter((x: any) => x.displayName === "tier").length}`;
-                            try {
-                                var geolocation = require('geolocation')
-                                geolocation.getCurrentPosition(function (err: any, position: any) {
-                                    if (err) throw err
-                                    console.log(position)
-                                })
-                            } catch(err) {
-                                console.log(err)
+                    if (attachment.url != null && attachment.url != "") {
+                        var result = await client.readImage(attachment.url)
+                        if (!isNullOrUndefined(result)) {
+                            var predictionResult = await client.readImageML(attachment.url);
+                            if (!isNullOrUndefined(predictionResult)) {
+                                var tiers = `Tiers: ${predictionResult.payload.filter((x: any) => x.displayName === "tier").length}`;
+                                returnMessage = JSON.stringify({ result: result, tiers: tiers })
+                            } else {
+                                returnMessage = "Kon de afbeelding niet lezen."
                             }
-                            message.channel.send(JSON.stringify({ result: result, tiers: tiers }))
                         } else {
-                            console.log("Warning: prediction result is empty");
+                            returnMessage = "Kon geen tekst lezen."
                         }
                     } else {
-                        console.log("Warning: Something gone wrong reading text from the image")
+                        returnMessage = "Kon geen afbeelding vinden."
                     }
+                    message.channel.send(returnMessage)
                 } else {
                     this.messageService.setMessage(message)
                     if (allowedChannels.some(x => x === message.channel.id)) {
