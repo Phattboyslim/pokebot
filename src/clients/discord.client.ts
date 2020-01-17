@@ -66,7 +66,7 @@ export class DiscordClient {
                     var client = new GoogleCloudClient();
                     var predictionResult = await client.readImageML();
                     if(!isNullOrUndefined(predictionResult)) {
-                        console.log("Info: prediction info", predictionResult.payload.filter(x=>x.displayName === "tier"))
+                        console.log("Info: prediction info", predictionResult.payload.filter((x: any)=>x.displayName === "tier"))
                     } else {
                         console.log("Warning: prediction result is empty");
                     }
