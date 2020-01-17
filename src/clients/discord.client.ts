@@ -42,7 +42,6 @@ export class DiscordClient {
     }
     async onMessage() {
         this.client.on('message', async (message: Message) => {
-            console.log(message)
             if (message.type === "GUILD_MEMBER_JOIN") {
                 var guildMemberId = message.author.id
                 if (!isNullOrUndefined(guildMemberId)) {
@@ -71,6 +70,9 @@ export class DiscordClient {
                     } else {
                         console.log("Warning: prediction result is empty");
                     }
+                } else if(message.content.indexOf("uploadRaid") > 1) {
+                    var attachment = message.attachments.first();
+                    console.log(attachment.url);
                 }
                 else {
                     this.messageService.setMessage(message)
