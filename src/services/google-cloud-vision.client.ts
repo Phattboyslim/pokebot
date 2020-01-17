@@ -11,10 +11,16 @@ export class GoogleCloudClient {
     client = new vision.ImageAnnotatorClient();
 
     async readImage() {
-        const fileName = 'Local image file, e.g. /path/to/image.png';
         const [result] = await this.client.textDetection("src/services/pokemon.png");
         const detections = result.textAnnotations;
         const result2 = detections[0].description.split('\n')
+        if(result2.any((x: string) => x.indexOf("Gym") > -1)){
+            console.log("Gym scanned")
+        } else if (result2.any((x: string) => x.indexOf("stop") > -1)){
+            console.log("Pokestop scanned")
+        } else {
+            console.log("Something else scanned")
+        }
         console.log(result2)
         let info = new PokestopInfo(result2);
         console.log(info)
