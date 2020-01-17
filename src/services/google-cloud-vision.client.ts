@@ -3,7 +3,7 @@ import { PokestopInfo } from "../models/PokestopInfo";
 import { isNullOrUndefined } from "util";
 
 const vision = require('@google-cloud/vision');
-const automl = require('@google-cloud/automl').v1;
+const automl = require('@google-cloud/automl');
 const fs = require('fs');
 // Creates a client
 
@@ -47,7 +47,7 @@ export class GoogleCloudClient {
 
     async readImageML() {
         // Create client for prediction service.
-        const client = new automl.PredictionServiceClient();
+        const client = new automl.v1beta1.PredictionServiceClient();
 
         /**
          * TODO(developer): Uncomment the following line before running the sample.
