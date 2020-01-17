@@ -6,7 +6,7 @@
 	"scripts": {
 		"buildstart": "tsc && node lib/bot.js",
 		"build": "tsc",
-		"start": "set APP_SETTING_TOKEN=NjIzODI4MDcwMDYyNjIwNjcz.Xa896w.o6fZa3u3VoHAdJA-BLtKBv-Z6UY && node lib/bot.js"
+		"start": "node lib/bot.js"
 	},
 	"author": "Mike Pattyn",
 	"dependencies": {
