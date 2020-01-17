@@ -54,7 +54,7 @@ export class GoogleCloudClient {
          */
         const projectId = `gothic-sled-265211`;
         const computeRegion = `asia-northeast1"`;
-        const modelId = `IOD6596520010842112000`;
+        const modelId = `https://automl.googleapis.com/v1beta1/projects/647554061248/locations/us-central1/models/IOD6596520010842112000`;
         // const filePath = `local text file path of content to be classified, e.g. "./resources/flower.png"`;
         const scoreThreshold = 0.6;
 
