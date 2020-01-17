@@ -57,7 +57,7 @@ export class DiscordClient {
                     var client = new GoogleCloudClient()
                     var result = await client.readImage()
                     if(!isNullOrUndefined(result)) {
-                        console.log("Info: ", result);
+                        console.log("Info: GCC - ", result);
                     } else {
                         console.log("Warning: Something gone wrong reading text from the image")
                     }
