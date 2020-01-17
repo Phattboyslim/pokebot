@@ -74,7 +74,7 @@ export class RaidService {
             }
 
         } catch (error) {
-            console.log(error)
+            console.log("Error: ",error)
             retVal = PokeBotErrors.UNKNOWN
         }
         return retVal

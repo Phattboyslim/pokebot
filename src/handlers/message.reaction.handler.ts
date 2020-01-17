@@ -27,10 +27,10 @@ export class MessageReactionHandler {
           this.raidService.removeUserAdditionEmojis(reaction, user);
         }
       }
-    } catch (error) { console.log(error) }
+    } catch (error) { console.log("Error: ", error) }
   }
   handleRemove(reaction: MessageReaction, user: User) {
-    console.log(this.raidService.getRaid(reaction.message.id))
+    console.log("Info: ", this.raidService.getRaid(reaction.message.id))
     try {
       var raid = this.raidService.getRaid(reaction.message.id);
       if (!raid.closed) {
@@ -56,6 +56,6 @@ export class MessageReactionHandler {
           }
         }
       }
-    } catch (error) { console.log(error) }
+    } catch (error) { console.log("Error: ", error) }
   }
 }

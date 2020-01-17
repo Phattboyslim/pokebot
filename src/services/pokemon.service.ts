@@ -10,7 +10,7 @@ export class PokemonService {
         var pokemonCounters: any = null
         if(!isNullOrUndefined(request)) {
             pokemonCounters = request
-            console.log(JSON.stringify(pokemonCounters))
+            console.log("Info: ",JSON.stringify(pokemonCounters))
         }
         var pokemon = pokemonCounters.filter((x: any) => x.name.toLowerCase() == name.toLowerCase())
         if(!isNullOrUndefined(pokemon)) {

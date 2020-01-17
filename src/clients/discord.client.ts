@@ -32,7 +32,7 @@ export class DiscordClient {
     }
     onReady() {
         this.client.on('ready', async () => {
-            console.log(`Logged in as ${this.client.user.tag}!`)
+            console.log(`Info: Logged in as ${this.client.user.tag}!`)
             var channel = this.getChannelById(ChannelIds.Welcome) as TextChannel
             if (!isNullOrUndefined(channel)) {
                 channel.send("Ah yeet")
@@ -57,12 +57,12 @@ export class DiscordClient {
                     var client = new GoogleCloudClient()
                     var result = await client.readImage()
                     if(!isNullOrUndefined(result)) {
-                        console.log(result);
+                        console.log("Info: ", result);
                     } else {
-                        console.log("Something gone wrong reading text from the image")
+                        console.log("Warning: Something gone wrong reading text from the image")
                     }
                 } else if(message.content.indexOf("testUpload")){
-                    console.log(message.attachments)
+                    console.log("Info: ", message.attachments)
                     const fs = require('fs');
                     message.attachments.forEach(a => {
                         fs.writeFileSync(`./${a.filename}`, a.message); // Write the file to the system synchronously.
