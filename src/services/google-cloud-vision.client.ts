@@ -63,7 +63,7 @@ export class GoogleCloudClient {
 
         // Read the file content for prediction.
         // TODO: Get Image From Discord Post as Base64 String
-        var content = fs.readFileSync("pokemon.png", 'base64');;
+        var content = fs.readFileSync("src/services/pokemon.png", 'base64');;
 
         const params: any = {};
 
