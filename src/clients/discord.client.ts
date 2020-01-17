@@ -61,11 +61,15 @@ export class DiscordClient {
                         var predictionResult = await client.readImageML(attachment.url);
                         if (!isNullOrUndefined(predictionResult)) {
                             var tiers = `Tiers: ${predictionResult.payload.filter((x: any) => x.displayName === "tier").length}`;
-                            var geolocation = require('geolocation')
-                            geolocation.getCurrentPosition(function (err: any, position: any) {
-                                if (err) throw err
-                                console.log(position)
-                            })
+                            try {
+                                var geolocation = require('geolocation')
+                                geolocation.getCurrentPosition(function (err: any, position: any) {
+                                    if (err) throw err
+                                    console.log(position)
+                                })
+                            } catch(err) {
+                                console.log(err)
+                            }
                             message.channel.send(JSON.stringify({ result: result, tiers: tiers }))
                         } else {
                             console.log("Warning: prediction result is empty");
