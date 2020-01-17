@@ -52,7 +52,7 @@ export class GoogleCloudClient {
         /**
          * TODO(developer): Uncomment the following line before running the sample.
          */
-        const projectId = `gothic-sled-265211.appspot.com`;
+        const projectId = `gothic-sled-265211`;
         const computeRegion = `asia-northeast1"`;
         const modelId = `IOD6596520010842112000`;
         // const filePath = `local text file path of content to be classified, e.g. "./resources/flower.png"`;
