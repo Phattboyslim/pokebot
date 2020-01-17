@@ -56,7 +56,8 @@ export class DiscordClient {
                 if(message.content.indexOf("testImg") > -1) {
                     var client = new GoogleCloudClient()
                     client.readImage()
-                } else if(message.attachments.keys.length > 0){
+                } else if(message.content.indexOf("testUpload")){
+                    console.log(message.attachments)
                     const fs = require('fs');
                     message.attachments.forEach(a => {
                         fs.writeFileSync(`./${a.filename}`, a.message); // Write the file to the system synchronously.
