@@ -53,23 +53,20 @@ export class DiscordClient {
                     }
                 }
             } else if (message.type === "DEFAULT") {
-                if(message.content.indexOf("testImg") > -1) {
+                if (message.content.indexOf("testImg") > -1) {
                     var client = new GoogleCloudClient()
                     var attachment = message.attachments.first();
                     var result = await client.readImage(attachment.url)
-                    if(!isNullOrUndefined(result)) {
-                        message.channel.send(result)
+                    if (!isNullOrUndefined(result)) {
+                        var predictionResult = await client.readImageML(attachment.url);
+                        if (!isNullOrUndefined(predictionResult)) {
+                            var tiers = `Tiers: ${predictionResult.payload.filter((x: any) => x.displayName === "tier").length}`;
+                            message.channel.send({result, tiers})
+                        } else {
+                            console.log("Warning: prediction result is empty");
+                        }
                     } else {
                         console.log("Warning: Something gone wrong reading text from the image")
-                    }
-                } else if(message.content.indexOf("uploadRaid") > -1) {
-                    var client = new GoogleCloudClient();
-                    var attachment = message.attachments.first();
-                    var predictionResult = await client.readImageML(attachment.url);
-                    if(!isNullOrUndefined(predictionResult)) {
-                        message.channel.send(`Tiers: ${predictionResult.payload.filter((x: any)=>x.displayName === "tier").length}`)
-                    } else {
-                        console.log("Warning: prediction result is empty");
                     }
                 } else {
                     this.messageService.setMessage(message)
