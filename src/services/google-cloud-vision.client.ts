@@ -45,7 +45,7 @@ export class GoogleCloudClient {
         }
     }
 
-    async readImageML() {
+    async readImageML(url: string) {
         // Create client for prediction service.
         const client = new automl.v1beta1.PredictionServiceClient();
 
@@ -63,7 +63,7 @@ export class GoogleCloudClient {
 
         // Read the file content for prediction.
         // TODO: Get Image From Discord Post as Base64 String
-        var content = fs.readFileSync("src/services/pokemon.png", 'base64');;
+        var content = await fs.readFile(url);;
 
         const params: any = {};
 
