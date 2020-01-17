@@ -62,7 +62,7 @@ export class DiscordClient {
                     } else {
                         console.log("Warning: Something gone wrong reading text from the image")
                     }
-                } else if(message.content.indexOf("testUpload")){
+                } else if(message.content.indexOf("testUpload") > -1){
                     console.log("Info: UPLOAD - ", message.attachments)
                     var client = new GoogleCloudClient();
                     var predictionResult = await client.readImageML();
