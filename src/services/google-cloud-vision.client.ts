@@ -53,7 +53,7 @@ export class GoogleCloudClient {
          * TODO(developer): Uncomment the following line before running the sample.
          */
         const projectId = `gothic-sled-265211`;
-        const computeRegion = `us-central"`;
+        const computeRegion = `us-central1"`;
         const modelId = `IOD6596520010842112000`;
         // const filePath = `local text file path of content to be classified, e.g. "./resources/flower.png"`;
         const scoreThreshold = 0.6;
