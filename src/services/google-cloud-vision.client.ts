@@ -56,7 +56,7 @@ export class GoogleCloudClient {
         const computeRegion = `us-central1`;
         const modelId = `IOD6596520010842112000`;
         // const filePath = `local text file path of content to be classified, e.g. "./resources/flower.png"`;
-        const scoreThreshold = 0.6;
+        // const scoreThreshold = 0.6;
 
         // Get the full path of the model.
         const modelFullId = client.modelPath(projectId, computeRegion, modelId);
@@ -67,9 +67,9 @@ export class GoogleCloudClient {
 
         const params: any = {};
 
-        if (scoreThreshold) {
-            params.score_threshold = scoreThreshold;
-        }
+        // if (scoreThreshold) {
+        //     params.score_threshold = scoreThreshold;
+        // }
 
         // Set the payload by giving the content and type of the file.
         const payload: any = {};
