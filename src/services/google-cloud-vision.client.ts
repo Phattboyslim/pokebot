@@ -3,7 +3,7 @@ import { PokestopInfo } from "../models/PokestopInfo";
 import { isNullOrUndefined } from "util";
 
 const vision = require('@google-cloud/vision');
-const automl = require('@google-cloud/automl');
+const automl = require('@google-cloud/automl').v1;
 const fs = require('fs');
 // Creates a client
 
