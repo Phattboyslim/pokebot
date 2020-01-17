@@ -47,6 +47,10 @@ export class GymInfo implements IGymInfo {
         this.pokemon = info[5]
         this.time_left = info[6]
     }
+
+    toString() { 
+        return `Found a ${this.pokemon} with ${this.cp} at${this.titel} - Ends at: ${this.time_left}`
+    }
 }
 export interface IPokestopInfo {
     time: string | null
