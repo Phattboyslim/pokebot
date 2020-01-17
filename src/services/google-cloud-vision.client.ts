@@ -52,7 +52,7 @@ export class GoogleCloudClient {
         const [response] = await client.predict(
             {
                 name: modelFullId,
-                payload: payload
+                payload
             });
         return response;
     }
