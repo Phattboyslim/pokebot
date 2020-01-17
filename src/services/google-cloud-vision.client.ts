@@ -88,7 +88,7 @@ export class GoogleCloudClient {
             console.log(`Predicted class name: ${result.displayName}`);
             console.log(`Predicted class score: ${result.classification.score}`);
         });
-
+        return response;
     }
 }
 export interface IGCPayload {

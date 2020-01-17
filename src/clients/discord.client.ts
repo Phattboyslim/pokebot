@@ -63,10 +63,13 @@ export class DiscordClient {
                     }
                 } else if(message.content.indexOf("testUpload")){
                     console.log("Info: UPLOAD - ", message.attachments)
-                    const fs = require('fs');
-                    message.attachments.forEach(a => {
-                        fs.writeFileSync(`./${a.filename}`, a.message); // Write the file to the system synchronously.
-                    });
+                    var client = new GoogleCloudClient();
+                    var predictionResult = await client.readImageML();
+                    if(!isNullOrUndefined(predictionResult)) {
+                        console.log("Info: prediction info", predictionResult)
+                    } else {
+                        console.log("Warning: prediction result is empty");
+                    }
                 }
                 else {
                     this.messageService.setMessage(message)
