@@ -35,7 +35,7 @@ export class DiscordClient {
             console.log(`Logged in as ${this.client.user.tag}!`)
             var channel = this.getChannelById(ChannelIds.Welcome) as TextChannel
             if (!isNullOrUndefined(channel)) {
-                channel.sendMessage("Ah yeet")
+                channel.send("Ah yeet")
                 this.channels.push(channel)
             }
         })
