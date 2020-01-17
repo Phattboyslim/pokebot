@@ -40,13 +40,9 @@ export class GoogleCloudClient {
             .then((response: any) => Buffer.from(response.data, 'binary'))
         
         // Create payload object to send to the model's API
-        const payload: GC_ML_Object = {
-            payload: {
-                image: {
-                    imageBytes: bytes
-                }
-            }
-        };
+        const payload: any = {};
+        payload.image = { imageBytes: bytes };
+
         
         // Get prediction response from api
         const [response] = await client.predict(
