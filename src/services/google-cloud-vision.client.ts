@@ -83,12 +83,6 @@ export class GoogleCloudClient {
                 payload: payload,
                 params: params,
             });
-        console.log(`Prediction results:`);
-        response.payload.forEach((result: any) => {
-            console.log(`Predicted class name: ${result.displayName}`);
-            console.log(`Predicted image object dectection: ${JSON.stringify(result.imageObjectDetection)}`)
-            // console.log(`Predicted class score: ${result.classification.score}`);
-        });
         return response;
     }
 }
