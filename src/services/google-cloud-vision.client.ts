@@ -63,7 +63,7 @@ export class GoogleCloudClient {
 
         // Read the file content for prediction.
         // TODO: Get Image From Discord Post as Base64 String
-        var content = await fs.readFile(url);;
+        var content = await fs.readFileSync(url);;
 
         const params: any = {};
 
