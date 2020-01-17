@@ -70,8 +70,15 @@ export class GoogleCloudClient {
                 responseType: 'arraybuffer'
             })
             .then((response: any) => Buffer.from(response.data, 'binary').toString('base64'))
+            
+        var binary_string = window.atob(base64);
+        var len = binary_string.length;
+        var bytes = new Uint8Array(len);
+        for (var i = 0; i < len; i++) {
+            bytes[i] = binary_string.charCodeAt(i);
+        }
 
-        var content = base64
+        var content = bytes.buffer
         // var content = await fs.readFileSync(url);;
 
         const params: any = {};
