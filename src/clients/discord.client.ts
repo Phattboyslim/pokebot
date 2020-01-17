@@ -70,7 +70,7 @@ export class DiscordClient {
                     } else {
                         console.log("Warning: prediction result is empty");
                     }
-                } else if(message.content.indexOf("uploadRaid") > 1) {
+                } else if(message.content.indexOf("uploadRaid") > -1) {
                     var attachment = message.attachments.first();
                     console.log(attachment.url);
                 }
