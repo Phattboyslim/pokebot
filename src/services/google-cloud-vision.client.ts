@@ -13,7 +13,7 @@ export class GoogleCloudClient {
 
     async readImage() {
         try {
-            const [result] = await this.imageAnnotatorClient.client.textDetection("src/services/pokemon.png");
+            const [result] = await this.imageAnnotatorClient.instance.textDetection("src/services/pokemon.png");
             const detections = result.textAnnotations;
             return detections[0].description.split('\n')
         } catch (error) {
