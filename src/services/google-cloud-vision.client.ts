@@ -13,7 +13,10 @@ export class GoogleCloudClient {
 
     async readImage() {
         try {
-            const [result] = await this.imageAnnotatorClient.instance.textDetection("src/services/pokemon.png");
+            // Get image as byte array
+            const bytes = await axios.get("src/services/pokemon.png", { responseType: 'arraybuffer' })
+            .then((response: any) => Buffer.from(response.data, 'binary'))
+            const [result] = await this.imageAnnotatorClient.instance.textDetection(bytes);
             const detections = result.textAnnotations;
             return detections[0].description.split('\n')
         } catch (error) {
