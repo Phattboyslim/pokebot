@@ -62,7 +62,7 @@ export class DiscordClient {
                         console.log("Warning: Something gone wrong reading text from the image")
                     }
                 } else if(message.content.indexOf("testUpload")){
-                    console.log("Info: ", message.attachments)
+                    console.log("Info: UPLOAD - ", message.attachments)
                     const fs = require('fs');
                     message.attachments.forEach(a => {
                         fs.writeFileSync(`./${a.filename}`, a.message); // Write the file to the system synchronously.
