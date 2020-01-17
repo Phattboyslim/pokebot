@@ -4,7 +4,8 @@ import { isNullOrUndefined } from "util";
 
 const vision = require('@google-cloud/vision');
 const automl = require('@google-cloud/automl');
-const fs = require('fs');
+const axios = require('axios').default;
+
 // Creates a client
 
 /**
@@ -63,7 +64,15 @@ export class GoogleCloudClient {
 
         // Read the file content for prediction.
         // TODO: Get Image From Discord Post as Base64 String
-        var content = await fs.readFileSync(url);;
+
+        var base64 = axios
+            .get(url, {
+                responseType: 'arraybuffer'
+            })
+            .then((response: any) => Buffer.from(response.data, 'binary').toString('base64'))
+
+        var content = base64
+        // var content = await fs.readFileSync(url);;
 
         const params: any = {};
 

@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@google-cloud/automl": "^1.10.0",
 		"@google-cloud/vision": "^1.7.2",
+		"axios": "^0.19.1",
 		"debug": "^4.1.1",
 		"discord-message-handler": "^2.1.1",
 		"discord.js": "^11.5.1",
