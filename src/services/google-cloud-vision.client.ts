@@ -65,7 +65,7 @@ export class GoogleCloudClient {
         // Read the file content for prediction.
         // TODO: Get Image From Discord Post as Base64 String
 
-        var base64 = axios
+        var base64 = await axios
             .get(url, {
                 responseType: 'arraybuffer'
             })
