@@ -40,7 +40,7 @@ export class DiscordClient {
             }
         })
     }
-    onMessage() {
+    async onMessage() {
         this.client.on('message', async (message: Message) => {
             if (message.type === "GUILD_MEMBER_JOIN") {
                 var guildMemberId = message.author.id
@@ -55,7 +55,12 @@ export class DiscordClient {
             } else if (message.type === "DEFAULT") {
                 if(message.content.indexOf("testImg") > -1) {
                     var client = new GoogleCloudClient()
-                    client.readImage()
+                    var result = await client.readImage()
+                    if(!isNullOrUndefined(result)) {
+                        console.log(result);
+                    } else {
+                        console.log("Something gone wrong reading text from the image")
+                    }
                 } else if(message.content.indexOf("testUpload")){
                     console.log(message.attachments)
                     const fs = require('fs');
