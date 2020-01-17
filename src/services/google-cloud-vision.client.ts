@@ -16,18 +16,38 @@ export class GoogleCloudClient {
         const result2: string[] = detections[0].description.split('\n')
         if(result2.some((x: string) => x.indexOf("Gym") > -1)){
             console.log("Gym scanned")
-        } else if (result2.some((x: string) => x.indexOf("stop") > -1)){
+            var gymInfo = new GymInfo(result2)
+            console.log(gymInfo)
+        } else if (result2.some((x: string) => x.indexOf("PokéStop") > -1)){
             console.log("Pokestop scanned")
+            var pokestopInfo = new PokestopInfo(result2)
+            console.log(pokestopInfo)
         } else {
             console.log("Something else scanned")
+            console.log(result2)
         }
-        console.log(result2)
-        let info = new PokestopInfo(result2);
-        console.log(info)
     }
         
 }
+export interface IGymInfo {
+    titel: string | null
+    pokemon: string | null
+    cp: string | null
+    time_left: string | null
+}
 
+export class GymInfo implements IGymInfo {
+    titel: string | null;    
+    pokemon: string | null;
+    cp: string | null;
+    time_left: string | null;
+    constructor(info: string[]){
+        this.titel = info[3]
+        this.cp = info[4]
+        this.pokemon = info[5]
+        this.time_left = info[6]
+    }
+}
 export interface IPokestopInfo {
     time: string | null
     titel: string | null
