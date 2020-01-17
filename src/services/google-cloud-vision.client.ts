@@ -11,10 +11,10 @@ export class GoogleCloudClient {
         this.imageAnnotatorClient = dependencyInjectionContainer.get<ImageAnnotatorClient>(ImageAnnotatorClient)
     }
 
-    async readImage() {
+    async readImage(url: string) {
         try {
             // Get image as byte array
-            const bytes = await axios.get("src/services/pokemon.png", { responseType: 'arraybuffer' })
+            const bytes = await axios.get(url, { responseType: 'arraybuffer' })
             .then((response: any) => Buffer.from(response.data, 'binary'))
             const [result] = await this.imageAnnotatorClient.instance.textDetection(bytes);
             const detections = result.textAnnotations;

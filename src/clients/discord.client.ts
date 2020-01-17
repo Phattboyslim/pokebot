@@ -55,18 +55,19 @@ export class DiscordClient {
             } else if (message.type === "DEFAULT") {
                 if(message.content.indexOf("testImg") > -1) {
                     var client = new GoogleCloudClient()
-                    var result = await client.readImage()
+                    var attachment = message.attachments.first();
+                    var result = await client.readImage(attachment.url)
                     if(!isNullOrUndefined(result)) {
-                        console.log("Info: GCC - ", result);
+                        message.channel.send(result)
                     } else {
                         console.log("Warning: Something gone wrong reading text from the image")
                     }
                 } else if(message.content.indexOf("uploadRaid") > -1) {
-                    var attachment = message.attachments.first();
                     var client = new GoogleCloudClient();
+                    var attachment = message.attachments.first();
                     var predictionResult = await client.readImageML(attachment.url);
                     if(!isNullOrUndefined(predictionResult)) {
-                        console.log("Number of tiers found: ", predictionResult.payload.filter((x: any)=>x.displayName === "tier").length)
+                        message.channel.send("Number of tiers found: ", predictionResult.payload.filter((x: any)=>x.displayName === "tier").length)
                     } else {
                         console.log("Warning: prediction result is empty");
                     }
