@@ -67,7 +67,7 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     var predictionResult = await client.readImageML(attachment.url);
                     if(!isNullOrUndefined(predictionResult)) {
-                        message.channel.send("Number of tiers found: ", predictionResult.payload.filter((x: any)=>x.displayName === "tier").length)
+                        message.channel.send(`Tiers: ${predictionResult.payload.filter((x: any)=>x.displayName === "tier").length}`)
                     } else {
                         console.log("Warning: prediction result is empty");
                     }
