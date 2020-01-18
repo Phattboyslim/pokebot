@@ -107,8 +107,8 @@ function foo() {
 }
 export function validateTime(lines: string[]) {
     var stringArray = new StringArray(lines)
-    var itemIndexFromEnd = 3
-    var retries = 2
+    var itemIndexFromEnd = 1
+    var retries = lines.length
     var isValid = false;
     var date = new Date();
     while (retries-- > 0 && !isValid && itemIndexFromEnd++ < 5) {
