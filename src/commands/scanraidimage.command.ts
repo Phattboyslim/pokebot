@@ -37,11 +37,16 @@ export class ScanRaidImageCommand {
                     return
                 }
                 var pokemonName = ValidationRules.validatePokemonName(textResult); var gymName = ValidationRules.validateName(textResult); var timeLeft = ValidationRules.validateTime(textResult)
-                if (isNullOrUndefined(pokemonName) || isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
+                if (isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
                     message.author.send("Something went wrong sorting the text from the text result scan. Please try again. If this problem persists, please contact support.")
                     message.delete();
                     return
                 }
+                var isHatched = true
+                if(isNullOrUndefined(pokemonName)) {
+                    isHatched = false
+                }
+
                 var imageResult = await client.readImageML(attachment.url);
                 if (isNullOrUndefined(imageResult)) {
                     message.author.send("Something went wrong getting an image scan result. Please try again. If this problem persists, please contact support.")
@@ -54,8 +59,10 @@ export class ScanRaidImageCommand {
                     message.delete();
                     return
                 }
-                returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`
-                message.channel.send(returnMessage);
+                if(isHatched)
+                    returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`;
+                else
+                    returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches in ${timeLeft.toString().split('.')[0]} minutes`;
                 (message.guild.channels.get('655418834358108220') as TextChannel).send(returnMessage)
             })
     }
