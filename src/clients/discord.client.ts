@@ -88,7 +88,7 @@ export class DiscordClient {
                         message.delete();
                         return
                     }
-                    returnMessage = `A ${pokemonName} was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.split('.')[0]} minutes`
+                    returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.split('.')[0]} minutes`
                     message.channel.send(returnMessage)
                 } else {
                     this.messageService.setMessage(message)
