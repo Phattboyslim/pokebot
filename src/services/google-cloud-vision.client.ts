@@ -43,7 +43,6 @@ export class GoogleCloudClient {
         const payload: any = {};
         payload.image = { imageBytes: bytes };
 
-        
         // Get prediction response from api
         const [response] = await client.predict(
             {

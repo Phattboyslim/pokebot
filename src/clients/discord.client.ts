@@ -117,7 +117,7 @@ export function validateTime(lines: string[]) {
         var selectedItem = stringArray.getNthFromLast(itemIndexFromEnd)
         console.log(`Validating: ${selectedItem}`)
         if (ValidationRules.hasNthOccurencesOf(selectedItem, ':') == 2) {
-            var arrayWithTimeNumbers = new StringArray(selectedItem.split(':'))
+            var arrayWithTimeNumbers = selectedItem.split(':')
             var hours = Number(arrayWithTimeNumbers[0])
             var minutes = Number(arrayWithTimeNumbers[1])
             var seconds = Number(arrayWithTimeNumbers[2])
