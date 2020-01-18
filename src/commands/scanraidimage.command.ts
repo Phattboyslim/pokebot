@@ -42,9 +42,9 @@ export class ScanRaidImageCommand {
                     message.delete();
                     return
                 }
-                var isHatched = true
-                if(isNullOrUndefined(pokemonName)) {
-                    isHatched = false
+                var isHatched = false
+                if(!isNullOrUndefined(pokemonName) && pokemonName.trim() != "") {
+                    isHatched = true
                 }
 
                 var imageResult = await client.readImageML(attachment.url);
