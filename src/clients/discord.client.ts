@@ -114,7 +114,7 @@ export function validatePokemonName(lines: string[]) {
     var retVal = ""
     while(retries-- > 0 && !isValid && itemIndex++ < lines.length) {
         var selectedItem = stringArray.getNth(itemIndex)
-        if(selectedItem.split(' ').length == 1 && ValidationRules.matchesFourCharacters(selectedItem)){
+        if(selectedItem && selectedItem.split(' ').length == 1 && ValidationRules.matchesFourCharacters(selectedItem)){
             retVal = selectedItem
             isValid = true
         }
