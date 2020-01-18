@@ -9,6 +9,7 @@ import { ChannelIds } from "../models/channelIds.enum";
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
         handler.onCommand("!ScanRaid")
+            .minArgs(0)
             .do(async (args: string[], rawArgs: string, message: Message) => {
                 var returnMessage = "Ti etwa hjil skjif gegoan"
                 var client: GoogleCloudClient = dependencyInjectionContainer.get<GoogleCloudClient>(GoogleCloudClient)
