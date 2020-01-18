@@ -59,25 +59,36 @@ export class DiscordClient {
                     var returnMessage = "Ti etwa hjil skjif gegoan"
                     var client = new GoogleCloudClient()
                     var attachment = message.attachments.first();
-                    if (attachment.url != null && attachment.url != "") {
-                        var result = await client.readImage(attachment.url)
-                        console.log("Time result:", validateTime(result))
-                        console.log("Name result:", validateName(result))
-                        console.log("Pokemon result:", validatePokemonName(result))
-                        if (!isNullOrUndefined(result)) {
-                            var predictionResult = await client.readImageML(attachment.url);
-                            if (!isNullOrUndefined(predictionResult)) {
-                                var tiers = `Tiers: ${predictionResult.payload.filter((x: any) => x.displayName === "tier").length}`;
-                                returnMessage = JSON.stringify({ result: result, tiers: tiers })
-                            } else {
-                                returnMessage = "Kon de afbeelding niet lezen."
-                            }
-                        } else {
-                            returnMessage = "Kon geen tekst lezen."
-                        }
-                    } else {
-                        returnMessage = "Kon geen afbeelding vinden."
+                    if (isNullOrUndefined(attachment.url) && attachment.url != "") {
+                        message.author.send("Something went wrong")
+                        message.delete();
+                        return
                     }
+                    var textResult = await client.readImage(attachment.url)
+                    if (isNullOrUndefined(textResult)) {
+                        message.author.send("Something went wrong")
+                        message.delete();
+                        return
+                    }
+                    var pokemonName = validatePokemonName(textResult); var gymName = validateName(textResult); var timeLeft = validateTime(textResult)
+                    if(!isNullOrUndefined(pokemonName) && !isNullOrUndefined(gymName) && !isNullOrUndefined(timeLeft)) {
+                        message.author.send("Something went wrong")
+                        message.delete();
+                        return
+                    }
+                    var imageResult = await client.readImageML(attachment.url);
+                    if (isNullOrUndefined(imageResult)) {
+                        message.author.send("Something went wrong")
+                        message.delete();
+                        return
+                    }
+                    var tiers = imageResult.payload.filter((x: any) => x.displayName === "tier");
+                    if (isNullOrUndefined(tiers)) {
+                        message.author.send("Something went wrong");
+                        message.delete();
+                        return
+                    }
+                    returnMessage = `A ${pokemonName} was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.split('.')[0]} minutes`
                     message.channel.send(returnMessage)
                 } else {
                     this.messageService.setMessage(message)
