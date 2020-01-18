@@ -128,7 +128,7 @@ export function validateTime(lines: string[]) {
             isValid = true
         }
     }
-    return date.startOf('hour').fromNow()
+    return date.fromNow()
 }
 
 export class StringArray extends Array<string> {
