@@ -10,6 +10,8 @@ import { ChannelIds } from "../models/channelIds.enum";
 import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
+var moment = require("moment")
+
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
 
 export class DiscordClient {
@@ -110,27 +112,15 @@ export function validateTime(lines: string[]) {
     var itemIndexFromEnd = 1
     var retries = lines.length
     var isValid = false;
-    var date = new Date();
+    var date = moment()
     while (retries-- > 0 && !isValid && itemIndexFromEnd++ < 5) {
         var selectedItem = stringArray.getNthFromLast(itemIndexFromEnd)
-
-        console.log(`Validating: ${selectedItem}\n
-            Result: ${ValidationRules.isTimeLeft(selectedItem)}`)
-
+        console.log(`Validating: ${selectedItem}`)
         if (ValidationRules.hasNthOccurencesOf(selectedItem, ':') == 2) {
             var arrayWithTimeNumbers = new StringArray(selectedItem.split(':'))
-            if (!arrayWithTimeNumbers.hasEqualLengthStrings()) {
-                var newArray: string[] = []
-                arrayWithTimeNumbers.forEach(string => {
-                    var newString = string
-                    if (string.length > 0 && string.length < 2) {
-                        newString = `0${newString}`
-                    }
-                    newArray.push(newString);
-                })
-                arrayWithTimeNumbers = new StringArray(newArray)
-            }
-            date.setTime(date.getTime() + (Number(arrayWithTimeNumbers[0]) * 60 * 60 * 1000) + (Number(arrayWithTimeNumbers[1]) * 60 * 1000) + (Number(arrayWithTimeNumbers[2]) * 1000))
+            date.add(Number(arrayWithTimeNumbers[0]), 'hours')
+            date.add(Number(arrayWithTimeNumbers[1]), 'minutes')
+            date.add(Number(arrayWithTimeNumbers[2]), 'seconds')
             isValid = true
         }
     }
