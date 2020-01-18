@@ -10,6 +10,7 @@ export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
         handler.onCommand("!scan")
             .minArgs(0)
+            .whenInvalid("Tis ni juste")
             .do(async (args: string[], rawArgs: string, message: Message) => {
                 var returnMessage = "Ti etwa hjil skjif gegoan"
                 var client: GoogleCloudClient = dependencyInjectionContainer.get<GoogleCloudClient>(GoogleCloudClient)
