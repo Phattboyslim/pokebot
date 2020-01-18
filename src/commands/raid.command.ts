@@ -7,7 +7,6 @@ import { RaidService, PokeBotErrors } from '../services/raid.service';
 
 export class RaidCommand {
     static setup(handler: MessageHandler) {
-
         handler.onCommand("!raid")
             .minArgs(5)
             .matches(Raid.RaidCommandRegularExpression())

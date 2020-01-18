@@ -12,7 +12,7 @@ import { JoinCommand } from "../commands/join.command"
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
 var moment = require("moment")
 
-const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
+const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString(), ChannelIds.RaidScanChannel.toString()]
 
 export class DiscordClient {
 

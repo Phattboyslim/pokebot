@@ -19,7 +19,7 @@ export class ScanRaidImageCommand {
                     message.delete();
                     return
                 }
-                if (message.channel.id != ChannelIds.RaidScanChannel) {
+                if (message.channel.id != ChannelIds.RaidScanChannel.toString()) {
                     message.author.send("You are not allowed to do this here!")
                     message.delete();
                     return
