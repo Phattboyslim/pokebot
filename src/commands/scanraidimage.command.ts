@@ -8,7 +8,7 @@ import { ChannelIds } from "../models/channelIds.enum";
 
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
-        handler.onCommand("!ScanRaid")
+        handler.onCommand("!scan")
             .minArgs(0)
             .do(async (args: string[], rawArgs: string, message: Message) => {
                 var returnMessage = "Ti etwa hjil skjif gegoan"

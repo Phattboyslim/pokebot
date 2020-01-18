@@ -9,7 +9,6 @@ import { isNullOrUndefined } from "util";
 import { ChannelIds } from "../models/channelIds.enum";
 import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
-import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
 var moment = require("moment")
 
@@ -57,6 +56,7 @@ export class DiscordClient {
                     }
                 }
             } else if (message.type === "DEFAULT") {
+                console.log(message)
                 this.messageService.setMessage(message)
                 if (allowedChannels.some(x => x === message.channel.id)) {
                     await this.handler.handleMessage(message)
