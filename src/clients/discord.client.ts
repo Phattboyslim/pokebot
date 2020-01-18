@@ -63,6 +63,7 @@ export class DiscordClient {
                         var result = await client.readImage(attachment.url)
                         console.log("Time result:", validateTime(result))
                         console.log("Name result:", validateName(result))
+                        console.log("Pokemon result:", validatePokemonName(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
@@ -105,6 +106,26 @@ export class DiscordClient {
         return this.client.channels.get(id);
     }
 }
+export function validatePokemonName(lines: string[]) {
+    var stringArray = new StringArray(lines);
+    var retries = lines.length
+    var isValid = false;
+    var itemIndex = 0
+    var foundItemCount = 0
+    var retVal = ""
+    while(retries-- > 0 && !isValid && itemIndex++ < lines.length) {
+        var selectedItem = stringArray.getNth(itemIndex)
+        if(ValidationRules.matchesFourCharacters(selectedItem)){
+            retVal = selectedItem
+            if(foundItemCount == 1){
+                isValid = true
+            }
+            foundItemCount++
+        }
+    }
+    return retVal
+}
+
 export function validateName(lines: string[]) {
     var stringArray = new StringArray(lines);
     var retries = lines.length
