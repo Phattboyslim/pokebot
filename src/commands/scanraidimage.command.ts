@@ -1,10 +1,10 @@
 import { MessageHandler } from "discord-message-handler";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { isNullOrUndefined } from "util";
-import { validatePokemonName, validateName, validateTime } from "../clients/discord.client";
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
+import { ValidationRules } from "../clients/ValidationRules";
 
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
@@ -26,36 +26,37 @@ export class ScanRaidImageCommand {
                 }
                 var attachment = message.attachments.first();
                 if (isNullOrUndefined(attachment.url) && attachment.url != "") {
-                    message.author.send("Something went wrong")
+                    message.author.send("Something went wrong fetching attachement url. Please try again. If this problem persists, please contact support.")
                     message.delete();
                     return
                 }
                 var textResult = await client.readImage(attachment.url)
                 if (isNullOrUndefined(textResult)) {
-                    message.author.send("Something went wrong")
+                    message.author.send("Something went wrong getting text result from your image. Please try again. If this problem persists, please contact support.")
                     message.delete();
                     return
                 }
-                var pokemonName = validatePokemonName(textResult); var gymName = validateName(textResult); var timeLeft = validateTime(textResult)
+                var pokemonName = ValidationRules.validatePokemonName(textResult); var gymName = ValidationRules.validateName(textResult); var timeLeft = ValidationRules.validateTime(textResult)
                 if (isNullOrUndefined(pokemonName) || isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
-                    message.author.send("Something went wrong")
+                    message.author.send("Something went wrong sorting the text from the text result scan. Please try again. If this problem persists, please contact support.")
                     message.delete();
                     return
                 }
                 var imageResult = await client.readImageML(attachment.url);
                 if (isNullOrUndefined(imageResult)) {
-                    message.author.send("Something went wrong")
+                    message.author.send("Something went wrong getting an image scan result. Please try again. If this problem persists, please contact support.")
                     message.delete();
                     return
                 }
                 var tiers = imageResult.payload.filter((x: any) => x.displayName === "tier");
                 if (isNullOrUndefined(tiers)) {
-                    message.author.send("Something went wrong");
+                    message.author.send("Something went wrong fetching tiers from image. Please try again. If this problem persists, please contact support.");
                     message.delete();
                     return
                 }
-                returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.split('.')[0]} minutes`
-                message.channel.send(returnMessage)
+                returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`
+                message.channel.send(returnMessage);
+                (message.guild.channels.get('655418834358108220') as TextChannel).send(returnMessage)
             })
     }
 }
