@@ -2,10 +2,7 @@ import { dependencyInjectionContainer } from "../di-container";
 import { GoogleCloudServices } from "./google-cloud.services";
 import { injectable } from "inversify";
 
-const automl = require('@google-cloud/automl');
 const axios = require('axios').default;
-
-// Performs text detection on the local file
 
 @injectable()
 export class GoogleCloudClient {
