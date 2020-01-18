@@ -111,16 +111,12 @@ export function validatePokemonName(lines: string[]) {
     var retries = lines.length
     var isValid = false;
     var itemIndex = 0
-    var foundItemCount = 0
     var retVal = ""
     while(retries-- > 0 && !isValid && itemIndex++ < lines.length) {
         var selectedItem = stringArray.getNth(itemIndex)
-        if(ValidationRules.matchesFourCharacters(selectedItem)){
+        if(selectedItem.split(' ').length == 1 && ValidationRules.matchesFourCharacters(selectedItem)){
             retVal = selectedItem
-            if(foundItemCount == 1){
-                isValid = true
-            }
-            foundItemCount++
+            isValid = true
         }
     }
     return retVal
