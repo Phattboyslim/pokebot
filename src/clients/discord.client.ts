@@ -59,6 +59,7 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     if (attachment.url != null && attachment.url != "") {
                         var result = await client.readImage(attachment.url)
+                        console.log(readTextData(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
@@ -99,5 +100,21 @@ export class DiscordClient {
     }
     getChannelById(id: string) {
         return this.client.channels.get(id);
+    }
+}
+
+export function readTextData(lines: string[]) {
+    var stringArray = new StringArray(lines)
+    return stringArray.last
+}
+
+export class StringArray extends Array<String> {
+    private _array: string []
+    constructor(array: string[]) {
+        super()
+        this._array = array
+    };
+    get last() {
+        return this._array[this._array.length - 1]
     }
 }
