@@ -61,7 +61,8 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     if (attachment.url != null && attachment.url != "") {
                         var result = await client.readImage(attachment.url)
-                        console.log("Read result:\n", validateTime(result))
+                        console.log("Time result:", validateTime(result))
+                        console.log("Name result:", validateName(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
@@ -104,8 +105,20 @@ export class DiscordClient {
         return this.client.channels.get(id);
     }
 }
-function foo() {
-    return true
+export function validateName(lines: string[]) {
+    var stringArray = new StringArray(lines);
+    var retries = lines.length
+    var isValid = false;
+    var itemIndex = 0
+    var retVal = ""
+    while(retries-- > 0 && !isValid && itemIndex++ < lines.length) {
+        var selectedItem = stringArray.getNth(itemIndex)
+        if(ValidationRules.matchesFourCharacters(selectedItem)){
+            retVal = selectedItem
+            isValid = true
+        }
+    }
+    return retVal
 }
 export function validateTime(lines: string[]) {
     var stringArray = new StringArray(lines)
@@ -128,7 +141,9 @@ export function validateTime(lines: string[]) {
             isValid = true
         }
     }
-    return date.fromNow()
+    var duration = moment.duration(date.diff(moment.utc().add(1,'hours'))).asMinutes();
+
+    return `Minutes from now: ${duration}`
 }
 
 export class StringArray extends Array<string> {
@@ -141,6 +156,9 @@ export class StringArray extends Array<string> {
         return this._array[this._array.length - 1]
     }
 
+    getNth(nth: number) {
+        return this._array[nth]
+    }
     getNthFromLast(nth: number) {
         return this._array[this._array.length - nth]
     }
@@ -167,7 +185,7 @@ export class ValidationRules {
         }
         return count
     }
-    static isTimeLeft(input: string) {
-        return input.match("[:]")?.length == 2
+    static matchesFourCharacters(input: string) {
+        return new RegExp("[a-z]{4,}").test(input)
     }
 }
