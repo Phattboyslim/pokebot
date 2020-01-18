@@ -121,7 +121,9 @@ export function validateTime(lines: string[]) {
             var hours = Number(arrayWithTimeNumbers[0])
             var minutes = Number(arrayWithTimeNumbers[1])
             var seconds = Number(arrayWithTimeNumbers[2])
-            seconds = seconds + (minutes * 60) + (hours * 60 * 60)
+            console.log(`Adding:\nHours: ${hours}\nMinutes: ${minutes}\nSeconds: ${seconds}`)
+            date.add(hours, 'hours')
+            date.add(minutes, 'minutes')
             date.add(seconds, 'seconds')
             isValid = true
         }
