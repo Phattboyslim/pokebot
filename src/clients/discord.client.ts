@@ -118,9 +118,13 @@ export function validateTime(lines: string[]) {
         console.log(`Validating: ${selectedItem}`)
         if (ValidationRules.hasNthOccurencesOf(selectedItem, ':') == 2) {
             var arrayWithTimeNumbers = new StringArray(selectedItem.split(':'))
-            date.add(Number(arrayWithTimeNumbers[0]), 'hours')
-            date.add(Number(arrayWithTimeNumbers[1]), 'minutes')
-            date.add(Number(arrayWithTimeNumbers[2]), 'seconds')
+            var hours = Number(arrayWithTimeNumbers[0])
+            var minutes = Number(arrayWithTimeNumbers[1])
+            var seconds = Number(arrayWithTimeNumbers[2])
+            console.log(`Adding:\nHours: ${hours}\nMinutes: ${minutes}\nSeconds: ${seconds}`)
+            date.add(hours, 'hours')
+            date.add(minutes, 'minutes')
+            date.add(seconds, 'seconds')
             isValid = true
         }
     }
