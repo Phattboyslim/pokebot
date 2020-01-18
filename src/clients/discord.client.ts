@@ -59,7 +59,7 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     if (attachment.url != null && attachment.url != "") {
                         var result = await client.readImage(attachment.url)
-                        console.log("Read result: ", readTextData(result))
+                        console.log("Read result:\n", readTextData(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
@@ -105,7 +105,7 @@ export class DiscordClient {
 
 export function readTextData(lines: string[]) {
     var stringArray = new StringArray(lines)
-    return stringArray.getNthFromLast(2)
+    return `Validated: ${stringArray.getNthFromLast(2)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(2))}`
 }
 
 export class StringArray extends Array<String> {
@@ -120,5 +120,11 @@ export class StringArray extends Array<String> {
 
     getNthFromLast(nth: number) {
         return this._array[this._array.length - nth]
+    }
+}
+
+export class ValidationRules {
+    static isTimeLeft(input: string) {
+        return new RegExp("([0-2]{1}[0-5]{1}):([0-5]{1}[0-9]{1}):([0-5]{1}[0-5]{1})").test(input)
     }
 }
