@@ -3,5 +3,6 @@ export enum ChannelIds {
     RaidRoeselare = "655414549939224598",
     RaidIzegem = "655414595846012928",
     RaidHooglede = "655414620793602058",
-    RaidOekene = "655414641031249941"
+    RaidOekene = "655414641031249941",
+    RaidScanChannel = "668134717614456895"
 }

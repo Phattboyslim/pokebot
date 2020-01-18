@@ -6,7 +6,7 @@ export class JoinCommand {
         handler.onCommand("GUILD_MEMBER_JOIN")
             .minArgs(0)
             .do((args: string[], rawArgs: string, message: Message) => {
-                message.guild.members.find(x=>x.id === message.author.id).sendMessage("A yeet")
+                message.author.send("Ahn yeet")
             })
     }
 }

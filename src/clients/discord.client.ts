@@ -56,40 +56,7 @@ export class DiscordClient {
                 }
             } else if (message.type === "DEFAULT") {
                 if (message.content.indexOf("testImg") > -1) {
-                    var returnMessage = "Ti etwa hjil skjif gegoan"
-                    var client = new GoogleCloudClient()
-                    var attachment = message.attachments.first();
-                    if (isNullOrUndefined(attachment.url) && attachment.url != "") {
-                        message.author.send("Something went wrong")
-                        message.delete();
-                        return
-                    }
-                    var textResult = await client.readImage(attachment.url)
-                    if (isNullOrUndefined(textResult)) {
-                        message.author.send("Something went wrong")
-                        message.delete();
-                        return
-                    }
-                    var pokemonName = validatePokemonName(textResult); var gymName = validateName(textResult); var timeLeft = validateTime(textResult)
-                    if(isNullOrUndefined(pokemonName) || isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
-                        message.author.send("Something went wrong")
-                        message.delete();
-                        return
-                    }
-                    var imageResult = await client.readImageML(attachment.url);
-                    if (isNullOrUndefined(imageResult)) {
-                        message.author.send("Something went wrong")
-                        message.delete();
-                        return
-                    }
-                    var tiers = imageResult.payload.filter((x: any) => x.displayName === "tier");
-                    if (isNullOrUndefined(tiers)) {
-                        message.author.send("Something went wrong");
-                        message.delete();
-                        return
-                    }
-                    returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.split('.')[0]} minutes`
-                    message.channel.send(returnMessage)
+                    
                 } else {
                     this.messageService.setMessage(message)
                     if (allowedChannels.some(x => x === message.channel.id)) {

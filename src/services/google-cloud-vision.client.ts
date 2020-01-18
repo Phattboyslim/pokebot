@@ -1,14 +1,17 @@
 import { dependencyInjectionContainer } from "../di-container";
-import { ImageAnnotatorClient } from "./ImageAnnotatorClient";
+import { GoogleCloudServices } from "./google-cloud.services";
+import { injectable } from "inversify";
 
 const automl = require('@google-cloud/automl');
 const axios = require('axios').default;
 
 // Performs text detection on the local file
+
+@injectable()
 export class GoogleCloudClient {
-    private imageAnnotatorClient: ImageAnnotatorClient
+    private gcs: GoogleCloudServices
     constructor() {
-        this.imageAnnotatorClient = dependencyInjectionContainer.get<ImageAnnotatorClient>(ImageAnnotatorClient)
+        this.gcs = dependencyInjectionContainer.get<GoogleCloudServices>(GoogleCloudServices)
     }
 
     async readImage(url: string) {
@@ -16,7 +19,7 @@ export class GoogleCloudClient {
             // Get image as byte array
             const bytes = await axios.get(url, { responseType: 'arraybuffer' })
             .then((response: any) => Buffer.from(response.data, 'binary'))
-            const [result] = await this.imageAnnotatorClient.instance.textDetection(bytes);
+            const [result] = await this.gcs.textClient.textDetection(bytes);
             const detections = result.textAnnotations;
             return detections[0].description.split('\n')
         } catch (error) {
@@ -26,14 +29,13 @@ export class GoogleCloudClient {
 
     async readImageML(url: string) {
         // Create client for prediction service.
-        const client = new automl.v1beta1.PredictionServiceClient();
 
         const projectId = `647554061248`;
         const computeRegion = `us-central1`;
         // const modelId = `IOD6596520010842112000`;
         const modelId = "IOD978842425650839552";
         // Get the full path of the model.
-        const modelFullId = client.modelPath(projectId, computeRegion, modelId);
+        const modelFullId = this.gcs.imageClient.modelPath(projectId, computeRegion, modelId);
 
         // Get image as byte array
         const bytes = await axios.get(url, { responseType: 'arraybuffer' })
@@ -44,7 +46,7 @@ export class GoogleCloudClient {
         payload.image = { imageBytes: bytes };
 
         // Get prediction response from api
-        const [response] = await client.predict(
+        const [response] = await this.gcs.imageClient.predict(
             {
                 name: modelFullId,
                 payload
