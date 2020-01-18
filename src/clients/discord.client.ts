@@ -71,7 +71,7 @@ export class DiscordClient {
                         return
                     }
                     var pokemonName = validatePokemonName(textResult); var gymName = validateName(textResult); var timeLeft = validateTime(textResult)
-                    if(!isNullOrUndefined(pokemonName) && !isNullOrUndefined(gymName) && !isNullOrUndefined(timeLeft)) {
+                    if(isNullOrUndefined(pokemonName) || isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
                         message.author.send("Something went wrong")
                         message.delete();
                         return
