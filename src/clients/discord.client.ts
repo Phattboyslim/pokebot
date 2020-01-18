@@ -10,6 +10,7 @@ import { ChannelIds } from "../models/channelIds.enum";
 import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
+import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
 var moment = require("moment")
 
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString()]
@@ -27,6 +28,7 @@ export class DiscordClient {
         RegisterRankCommand.setup(this.handler)
         CounterCommand.setup(this.handler)
         JoinCommand.setup(this.handler)
+        ScanRaidImageCommand.setup(this.handler)
     }
 
     login() {
@@ -55,13 +57,9 @@ export class DiscordClient {
                     }
                 }
             } else if (message.type === "DEFAULT") {
-                if (message.content.indexOf("testImg") > -1) {
-                    
-                } else {
-                    this.messageService.setMessage(message)
-                    if (allowedChannels.some(x => x === message.channel.id)) {
-                        await this.handler.handleMessage(message)
-                    }
+                this.messageService.setMessage(message)
+                if (allowedChannels.some(x => x === message.channel.id)) {
+                    await this.handler.handleMessage(message)
                 }
             }
         })
