@@ -105,10 +105,30 @@ export class DiscordClient {
 
 export function readTextData(lines: string[]) {
     var stringArray = new StringArray(lines)
+    var timeLeft = stringArray.getNthFromLast(3)
+    if(ValidationRules.hasNthOccurencesOf(timeLeft, ':') == 2) {
+        var arrayWithTimeNumbers = new StringArray(timeLeft.split(':'))
+        if(!arrayWithTimeNumbers.hasEqualLengthStrings()){
+            var newArray: string[] = []
+            arrayWithTimeNumbers.forEach(string => {
+                var newString = string
+                if(string.length > 0 && string.length < 2) {
+                    newString = `0${newString}`
+                }
+                newArray.push(newString);   
+            })
+            arrayWithTimeNumbers = new StringArray(newArray)
+        }
+        var date = new Date();
+        date.setTime(date.getTime() + (Number(arrayWithTimeNumbers[0]) * 60 * 60 * 1000) + (Number(arrayWithTimeNumbers[1]) * 60 * 1000) + (Number(arrayWithTimeNumbers[2]) * 1000))
+        console.log(date)
+    } else {
+        timeLeft = stringArray.getNthFromLast(4)
+    }
     return `Validated: ${stringArray.getNthFromLast(3)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(3))}`
 }
 
-export class StringArray extends Array<String> {
+export class StringArray extends Array<string> {
     private _array: string[]
     constructor(array: string[]) {
         super()
@@ -121,9 +141,29 @@ export class StringArray extends Array<String> {
     getNthFromLast(nth: number) {
         return this._array[this._array.length - nth]
     }
+
+    hasEqualLengthStrings() {
+        const firstLengthValue = this._array[0].length
+        this._array.forEach(string => {
+            if(string.length != firstLengthValue) {
+                return false
+            }
+        })
+        return true
+    }
 }
 
 export class ValidationRules {
+
+    static hasNthOccurencesOf(input: string, match: string) {
+        var count = 0
+        for(var i = 0; i < input.length; i++){
+            if(input.charAt(i) === match) {
+                count++
+            }
+        }
+        return count
+    }
     static isTimeLeft(input: string) {
         return new RegExp("([0-2]{1}[0-5]{1}):([0-5]{1}[0-9]{1}):([0-5]{1}[0-5]{1})").test(input)
     }
