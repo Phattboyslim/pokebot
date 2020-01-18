@@ -105,7 +105,7 @@ export class DiscordClient {
 
 export function readTextData(lines: string[]) {
     var stringArray = new StringArray(lines)
-    return `Validated: ${stringArray.getNthFromLast(2)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(2))}`
+    return `Validated: ${stringArray.getNthFromLast(3)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(3))}`
 }
 
 export class StringArray extends Array<String> {
