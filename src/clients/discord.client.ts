@@ -59,7 +59,7 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     if (attachment.url != null && attachment.url != "") {
                         var result = await client.readImage(attachment.url)
-                        console.log("Read result: ",readTextData(result))
+                        console.log("Read result: ", readTextData(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
@@ -105,16 +105,20 @@ export class DiscordClient {
 
 export function readTextData(lines: string[]) {
     var stringArray = new StringArray(lines)
-    return stringArray.last
+    return stringArray.getNthFromLast(2)
 }
 
 export class StringArray extends Array<String> {
-    private _array: string []
+    private _array: string[]
     constructor(array: string[]) {
         super()
         this._array = array
     };
     get last() {
         return this._array[this._array.length - 1]
+    }
+
+    getNthFromLast(nth: number) {
+        return this._array[this._array.length - nth]
     }
 }
