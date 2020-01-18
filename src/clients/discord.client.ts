@@ -59,7 +59,7 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     if (attachment.url != null && attachment.url != "") {
                         var result = await client.readImage(attachment.url)
-                        console.log("Read result:\n", readTextData(result))
+                        console.log("Read result:\n", validateTime(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
@@ -102,35 +102,41 @@ export class DiscordClient {
         return this.client.channels.get(id);
     }
 }
-
-export function readTextData(lines: string[]) {
+function foo() {
+    return true
+}
+export function validateTime(lines: string[]) {
     var stringArray = new StringArray(lines)
-    var timeLeft = stringArray.getNthFromLast(3)
-    if(ValidationRules.hasNthOccurencesOf(timeLeft, ':') == 2) {
-        var arrayWithTimeNumbers = new StringArray(timeLeft.split(':'))
-        if(!arrayWithTimeNumbers.hasEqualLengthStrings()){
-            var newArray: string[] = []
-            arrayWithTimeNumbers.forEach(string => {
-                var newString = string
-                if(string.length > 0 && string.length < 2) {
-                    newString = `0${newString}`
-                }
-                newArray.push(newString);   
-            })
-            arrayWithTimeNumbers = new StringArray(newArray)
+    var itemIndexFromEnd = 3
+    var retries = 2
+    var isValid = false;
+    var date = new Date();
+    while (retries-- > 0 && !isValid && itemIndexFromEnd++ < 5) {
+        console.log(`Validated: ${stringArray.getNthFromLast(itemIndexFromEnd)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(itemIndexFromEnd))}`)
+        var timeLeft = stringArray.getNthFromLast(itemIndexFromEnd)
+        if (ValidationRules.hasNthOccurencesOf(timeLeft, ':') == 2) {
+            var arrayWithTimeNumbers = new StringArray(timeLeft.split(':'))
+            if (!arrayWithTimeNumbers.hasEqualLengthStrings()) {
+                var newArray: string[] = []
+                arrayWithTimeNumbers.forEach(string => {
+                    var newString = string
+                    if (string.length > 0 && string.length < 2) {
+                        newString = `0${newString}`
+                    }
+                    newArray.push(newString);
+                })
+                arrayWithTimeNumbers = new StringArray(newArray)
+            }
+            date.setTime(date.getTime() + (Number(arrayWithTimeNumbers[0]) * 60 * 60 * 1000) + (Number(arrayWithTimeNumbers[1]) * 60 * 1000) + (Number(arrayWithTimeNumbers[2]) * 1000))
+            isValid = true
         }
-        var date = new Date();
-        date.setTime(date.getTime() + (Number(arrayWithTimeNumbers[0]) * 60 * 60 * 1000) + (Number(arrayWithTimeNumbers[1]) * 60 * 1000) + (Number(arrayWithTimeNumbers[2]) * 1000))
-        console.log(date)
-    } else {
-        timeLeft = stringArray.getNthFromLast(4)
     }
-    return `Validated: ${stringArray.getNthFromLast(3)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(3))}`
+    return { isValid, date }
 }
 
 export class StringArray extends Array<string> {
-    private _array: string[]
-    constructor(array: string[]) {
+    private _array: Array<string>
+    constructor(array: Array<string>) {
         super()
         this._array = array
     };
@@ -145,7 +151,7 @@ export class StringArray extends Array<string> {
     hasEqualLengthStrings() {
         const firstLengthValue = this._array[0].length
         this._array.forEach(string => {
-            if(string.length != firstLengthValue) {
+            if (string.length != firstLengthValue) {
                 return false
             }
         })
@@ -157,14 +163,14 @@ export class ValidationRules {
 
     static hasNthOccurencesOf(input: string, match: string) {
         var count = 0
-        for(var i = 0; i < input.length; i++){
-            if(input.charAt(i) === match) {
+        for (var i = 0; i < input.length; i++) {
+            if (input.charAt(i) === match) {
                 count++
             }
         }
         return count
     }
     static isTimeLeft(input: string) {
-        return new RegExp("([0-2]{1}[0-5]{1}):([0-5]{1}[0-9]{1}):([0-5]{1}[0-5]{1})").test(input)
+        return input.match("[:]")?.length == 2
     }
 }
