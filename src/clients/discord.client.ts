@@ -112,7 +112,7 @@ export function validateTime(lines: string[]) {
     var itemIndexFromEnd = 1
     var retries = lines.length
     var isValid = false;
-    var date = moment()
+    var date = moment.utc().add(1, 'hours'); // for the belgium local time
     while (retries-- > 0 && !isValid && itemIndexFromEnd++ < 5) {
         var selectedItem = stringArray.getNthFromLast(itemIndexFromEnd)
         console.log(`Validating: ${selectedItem}`)
