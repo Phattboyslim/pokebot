@@ -112,10 +112,13 @@ export function validateTime(lines: string[]) {
     var isValid = false;
     var date = new Date();
     while (retries-- > 0 && !isValid && itemIndexFromEnd++ < 5) {
-        console.log(`Validated: ${stringArray.getNthFromLast(itemIndexFromEnd)} - Result: ${ValidationRules.isTimeLeft(stringArray.getNthFromLast(itemIndexFromEnd))}`)
-        var timeLeft = stringArray.getNthFromLast(itemIndexFromEnd)
-        if (ValidationRules.hasNthOccurencesOf(timeLeft, ':') == 2) {
-            var arrayWithTimeNumbers = new StringArray(timeLeft.split(':'))
+        var selectedItem = stringArray.getNthFromLast(itemIndexFromEnd)
+
+        console.log(`Validating: ${selectedItem}\n
+            Result: ${ValidationRules.isTimeLeft(selectedItem)}`)
+
+        if (ValidationRules.hasNthOccurencesOf(selectedItem, ':') == 2) {
+            var arrayWithTimeNumbers = new StringArray(selectedItem.split(':'))
             if (!arrayWithTimeNumbers.hasEqualLengthStrings()) {
                 var newArray: string[] = []
                 arrayWithTimeNumbers.forEach(string => {
