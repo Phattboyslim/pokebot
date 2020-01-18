@@ -59,7 +59,7 @@ export class DiscordClient {
                     var attachment = message.attachments.first();
                     if (attachment.url != null && attachment.url != "") {
                         var result = await client.readImage(attachment.url)
-                        console.log(readTextData(result))
+                        console.log("Read result: ",readTextData(result))
                         if (!isNullOrUndefined(result)) {
                             var predictionResult = await client.readImageML(attachment.url);
                             if (!isNullOrUndefined(predictionResult)) {
