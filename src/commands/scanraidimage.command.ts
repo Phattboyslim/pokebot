@@ -6,7 +6,7 @@ import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
 import { ValidationRules } from "../clients/ValidationRules";
 import { Raid, RaidStore } from "../stores/raid.store";
-const moment = require("moment");
+var uuidv4 = require('uuid/v4')
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
         handler.onCommand("!scan")
@@ -65,6 +65,7 @@ export class ScanRaidImageCommand {
                 else
                     returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches in ${timeLeft.toString().split('.')[0]} minutes`;
                 var raid: Raid = new Raid();
+                raid.Guid = uuidv4()
                 raid.DateEnd = new Date()
                 raid.GymName = gymName;
                 raid.IsHatched = isHatched;
@@ -72,7 +73,7 @@ export class ScanRaidImageCommand {
                 raid.Tiers = tiers
                 var store: RaidStore = new RaidStore();
                 await store.insert(raid);
-
+                console.log(await store.get("Raids"));
                 (message.guild.channels.get('655418834358108220') as TextChannel).send(returnMessage)
             })
     }

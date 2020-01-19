@@ -3,7 +3,7 @@ const { Datastore } = require("@google-cloud/datastore")
 export class RaidStore {
     private datastore = new Datastore();
 
-    insert = async (raid: Raid) => {
+    async insert(raid: Raid) {
         try {
             return await this.datastore.save({
                 key: this.datastore.key('Raids'),
@@ -13,9 +13,18 @@ export class RaidStore {
             console.log(error)
         }
     }
+
+    async get(key: string) {
+        try {
+            return await this.datastore.get(key)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 }
 
 export class Raid {
+    Guid: string | null = null;
     DateEnd: Date | null = null;
     GymName: string | null = null;
     IsHatched: boolean | null = null;
