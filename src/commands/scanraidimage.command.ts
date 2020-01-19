@@ -71,7 +71,7 @@ export class ScanRaidImageCommand {
                 raid.PokemonName = pokemonName;
                 raid.Tiers = tiers
                 var store: RaidStore = new RaidStore();
-                store.insert(raid)
+                await store.insert(raid);
 
                 (message.guild.channels.get('655418834358108220') as TextChannel).send(returnMessage)
             })
