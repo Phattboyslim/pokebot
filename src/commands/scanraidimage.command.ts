@@ -5,7 +5,8 @@ import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
 import { ValidationRules } from "../clients/ValidationRules";
-
+import { Raid, RaidStore } from "../stores/raid.store";
+const moment = require("moment");
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
         handler.onCommand("!scan")
@@ -63,6 +64,16 @@ export class ScanRaidImageCommand {
                     returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`;
                 else
                     returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches in ${timeLeft.toString().split('.')[0]} minutes`;
+                
+                var raid: Raid = new Raid();
+                raid.DateEnd = moment.utc().add(1, 'hours').add(Number(timeLeft.toString().split('.')[0]), 'minutes');
+                raid.GymName = gymName;
+                raid.IsHatched = isHatched;
+                raid.PokemonName = pokemonName;
+                raid.Tiers = tiers
+                var store: RaidStore = new RaidStore();
+                store.insert(raid)
+
                 (message.guild.channels.get('655418834358108220') as TextChannel).send(returnMessage)
             })
     }

@@ -11,6 +11,7 @@
 	"author": "Mike Pattyn",
 	"dependencies": {
 		"@google-cloud/automl": "^1.10.0",
+		"@google-cloud/datastore": "^5.0.3",
 		"@google-cloud/vision": "^1.7.2",
 		"axios": "^0.19.1",
 		"debug": "^4.1.1",
