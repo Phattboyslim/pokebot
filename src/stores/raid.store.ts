@@ -3,7 +3,7 @@ const { Datastore } = require("@google-cloud/datastore")
 export class RaidStore {
     private datastore = new Datastore();
 
-    insert(raid: Raid){
+    insert = (raid: Raid) => {
         return this.datastore.save({
             key: this.datastore.key('Raids'),
             data: raid
