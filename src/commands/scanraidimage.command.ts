@@ -64,9 +64,8 @@ export class ScanRaidImageCommand {
                     returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`;
                 else
                     returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches in ${timeLeft.toString().split('.')[0]} minutes`;
-                
                 var raid: Raid = new Raid();
-                raid.DateEnd = moment.utc().add(1, 'hours').add(Number(timeLeft.toString().split('.')[0]), 'minutes');
+                raid.DateEnd = new Date()
                 raid.GymName = gymName;
                 raid.IsHatched = isHatched;
                 raid.PokemonName = pokemonName;
