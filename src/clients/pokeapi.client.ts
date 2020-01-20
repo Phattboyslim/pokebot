@@ -1,3 +1,5 @@
+import { ApiClient } from "./http.client";
+
 const axios = require('axios').default;
 
 export class PokeapiClient {
@@ -8,18 +10,9 @@ export class PokeapiClient {
     }
 
     async getGeneration(gen: number) {
-        await axios.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
-            .then(function (response: any) {
-                // handle success
-                return response.body;
-            })
-            .catch(function (error: any) {
-                // handle error
-                console.log(error);
-            })
-            .finally(function () {
-                console.log('klaar')
-            });
+        var client = new ApiClient()
+        var request = await client.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
+        return request
     }
 }
 
