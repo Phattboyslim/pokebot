@@ -47,7 +47,7 @@ export class PokemonStore {
             }
         })
             .then((response: any) => {
-                retVal = response
+                retVal = response.body
             })
             .catch((error: any) => {
                 console.log(error)
