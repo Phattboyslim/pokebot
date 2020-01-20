@@ -96,6 +96,6 @@ export class CustomString {
     }
     getLastArrayItemSplitOnSlashWithASlashAsLastCharacter(){
         var array = this._input.split('\/')
-        return array[array.length-1]
+        return array[array.length-2]
     }
 }
