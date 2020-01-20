@@ -43,7 +43,13 @@ export class DiscordClient {
             }
             var pokeApiClient = new PokeapiClient();
             var result = await pokeApiClient.getGeneration(1)
-            console.log(result)
+            if(!isNullOrUndefined(result)) {
+                var pokemons = result.pokemon_species
+                var names = pokemons.map((pokemon: any) => {
+                    return new CustomString(pokemon.name).capitalizeFirstLetter()
+                })
+                console.log(names)
+            }
         })
     }
     async onMessage() {
