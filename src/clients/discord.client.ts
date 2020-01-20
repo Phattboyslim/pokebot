@@ -45,13 +45,9 @@ export class DiscordClient {
             var store = new PokemonStore();
             var result: any = await store.getNamesFromRapiAPI()
             if (!isNullOrUndefined(result)){
-                var obj = JSON.parse(result);
-                console.log(obj)
+                var obj = result;
                 for(var key in obj) {
                     console.log(key)
-                    if(obj.hasOwnProperty(key)) {
-                        console.log(obj[key]);
-                    }
                 }
             }
         })
