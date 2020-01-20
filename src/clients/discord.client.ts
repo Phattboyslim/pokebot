@@ -45,11 +45,12 @@ export class DiscordClient {
             var result = await pokeApiClient.getGeneration(1)
             if(!isNullOrUndefined(result)) {
                 var pokemons = result.pokemon_species
-                var names = pokemons.map((pokemon: any) => {
+                var list = pokemons.map((pokemon: any) => {
                     var name = new CustomString(pokemon.name)
-                    return name.capitalizeFirstLetter()
+                    var number = new CustomString(pokemon.name)
+                    return {name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter())}
                 })
-                Promise.all(names).then(data => console.log(data));
+                console.log(list)
             }
         })
     }
@@ -92,5 +93,9 @@ export class CustomString {
     }
     capitalizeFirstLetter() {
         return this._input[0].toUpperCase() + this._input.substring(1) 
+    }
+    getLastArrayItemSplitOnSlashWithASlashAsLastCharacter(){
+        var array = this._input.split('\/')
+        return array[array.length-1]
     }
 }
