@@ -8,7 +8,7 @@ export class PokeapiClient {
     }
 
     async getGeneration(gen: number) {
-        axios.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
+        await axios.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
             .then(function (response: any) {
                 // handle success
                 if(response.status === 200) {
