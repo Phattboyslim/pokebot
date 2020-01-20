@@ -47,6 +47,7 @@ export class DiscordClient {
             if (!isNullOrUndefined(result)){
                 var obj = JSON.parse(result);
                 for(var key in obj) {
+                    console.log(key)
                     if(obj.hasOwnProperty(key)) {
                         console.log(obj[key]);
                     }
