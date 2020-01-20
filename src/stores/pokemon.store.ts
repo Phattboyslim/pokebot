@@ -22,7 +22,7 @@ export class PokemonStore {
             .filter('name', '=', name)
             .limit(1)
 
-        this.datastore.runQuery(q)
+        await this.datastore.runQuery(q)
     }
 
     async get(key: string) {
