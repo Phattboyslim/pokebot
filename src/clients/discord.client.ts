@@ -52,7 +52,7 @@ export class DiscordClient {
                         var number = new CustomString(pokemon.url)
                         return { name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter()) }
                     })
-                    listNames.concat(list);
+                    listNames = listNames.concat(list);
                 }
             }
             console.log(listNames)
