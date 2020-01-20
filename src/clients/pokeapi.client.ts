@@ -17,7 +17,7 @@ export class PokeapiClient {
         
             res.on('end', function(){
                 var response = JSON.parse(body);
-                console.log("Got a response: ", response.picture);
+                console.log("Got a response: ", response);
             });
         }).on('error', function(e){
               console.log("Got an error: ", e);
