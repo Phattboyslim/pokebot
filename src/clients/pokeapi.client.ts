@@ -8,9 +8,10 @@ export class PokeapiClient {
     }
 
     getGeneration(gen: number) {
+
         http.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`, function(res){
             var body = '';
-        
+            res.headers.accept = "application/json"
             res.on('data', function(chunk){
                 body += chunk;
             });
