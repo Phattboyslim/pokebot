@@ -47,7 +47,9 @@ export class DiscordClient {
             if (!isNullOrUndefined(result)){
                 var obj = result;
                 for(var key in obj) {
-                    console.log(key)
+                    var pokemonInStore = await store.get(obj[key].name)
+                    console.log(pokemonInStore)
+                    console.log(obj[key])
                 }
             }
         })
