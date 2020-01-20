@@ -12,6 +12,7 @@ import { JoinCommand } from "../commands/join.command"
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
 import { StringArray } from "./StringArray";
 import { ValidationRules } from "./ValidationRules";
+import { PokeapiClient } from "./pokeapi.client";
 var moment = require("moment")
 
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString(), ChannelIds.RaidScanChannel.toString()]
@@ -43,6 +44,9 @@ export class DiscordClient {
                 channel.send("Ah yeet")
                 this.channels.push(channel)
             }
+            var pokeApiClient = new PokeapiClient();
+            var result = pokeApiClient.getGeneration(1)
+            console.log(result)
         })
     }
     async onMessage() {
