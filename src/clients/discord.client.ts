@@ -34,7 +34,7 @@ export class DiscordClient {
     login() {
         this.client.login(process.env.BOT_TOKEN)
     }
-    onReady() {
+    async onReady() {
         this.client.on('ready', async () => {
             console.log(`Info: Logged in as ${this.client.user.tag}!`)
             var channel = this.getChannelById(ChannelIds.Welcome) as TextChannel
