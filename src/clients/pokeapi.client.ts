@@ -1,4 +1,4 @@
-const axios = require('axios')
+const axios = require('axios').default;
 
 export class PokeapiClient {
     private baseUrl = "http://pokeapi.co/api/v2";
