@@ -43,7 +43,7 @@ export class DiscordClient {
                 this.channels.push(channel)
             }
             var store = new PokemonStore();
-            var result = await store.searchByName("Bulbasaur")
+            var result = await store.searchByName("Ivysaur")
             console.log(result)
         })
     }
