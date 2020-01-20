@@ -11,7 +11,7 @@ export class PokeapiClient {
         await axios.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
             .then(function (response: any) {
                 // handle success
-                return response.body;
+                return Promise.resolve(response.body);
             })
             .catch(function (error: any) {
                 // handle error
