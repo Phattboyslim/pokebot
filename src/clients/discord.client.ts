@@ -47,7 +47,7 @@ export class DiscordClient {
                 var pokemons = result.pokemon_species
                 var list = pokemons.map((pokemon: any) => {
                     var name = new CustomString(pokemon.name)
-                    var number = new CustomString(pokemon.name)
+                    var number = new CustomString(pokemon.url)
                     return {name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter())}
                 })
                 console.log(list)
