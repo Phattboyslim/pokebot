@@ -5,7 +5,7 @@ export class PokemonStore {
 
     async insert(pokemon: Pokemon[]) {
         try {
-            return await this.datastore.insert({
+            return await this.datastore.save({
                 key: this.datastore.key('Pokemon'),
                 data: pokemon
             })
