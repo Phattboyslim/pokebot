@@ -43,21 +43,20 @@ export class DiscordClient {
                 this.channels.push(channel)
             }
             var pokeApiClient = new PokeapiClient();
-            var listNames: Pokemon[] = []
+            var store = new PokemonStore();
             for (var i = 1; i < 6; i++) {
                 var result = await pokeApiClient.getGeneration(i)
                 if (!isNullOrUndefined(result)) {
                     var pokemons = result.pokemon_species
-                    var list = pokemons.map((pokemon: any) => {
+                    var list: Pokemon[] = pokemons.map((pokemon: any) => {
                         var name = new CustomString(pokemon.name)
                         var number = new CustomString(pokemon.url)
                         return { name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter()) }
                     })
-                    listNames = listNames.concat(list);
+                    console.log(list)
+                    store.insert(list)
                 }
             }
-            var store = new PokemonStore();
-            store.insert(listNames)
 
             
         })
