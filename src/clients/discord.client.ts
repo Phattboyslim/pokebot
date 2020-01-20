@@ -54,7 +54,7 @@ export class DiscordClient {
                         return { name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter()) }
                     })
                     console.log(list)
-                    store.insert(list)
+                    store.insertMany(list)
                 }
             }
 

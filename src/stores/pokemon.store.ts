@@ -3,9 +3,9 @@ const { Datastore } = require("@google-cloud/datastore")
 export class PokemonStore {
     private datastore = new Datastore();
 
-    async insert(pokemon: Pokemon[]) {
+    async insertMany(pokemon: Pokemon[]) {
         try {
-            return await this.datastore.save({
+            return await this.datastore.merge({
                 key: this.datastore.key('Pokemon'),
                 data: JSON.stringify(pokemon)
             })
