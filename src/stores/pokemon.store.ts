@@ -1,5 +1,5 @@
 const { Datastore } = require("@google-cloud/datastore")
-
+const axios = require('axios').default;
 export class PokemonStore {
     private datastore = new Datastore();
 
@@ -34,6 +34,25 @@ export class PokemonStore {
         } catch (error) {
             console.log(error)
         }
+    }
+    async getNamesFromRapiAPI() {
+        var retVal = null
+        axios({
+            "method":"GET",
+            "url":"https://pokemon-go1.p.rapidapi.com/pokemon_names.json",
+            "headers":{
+            "content-type":"application/octet-stream",
+            "x-rapidapi-host":"pokemon-go1.p.rapidapi.com",
+            "x-rapidapi-key":"4e23a33e0emsh55a6269c414188fp10370djsn6d976e399e42"
+            }
+            })
+            .then((response: any)=>{
+                retVal = response
+            })
+            .catch((error: any)=>{
+              console.log(error)
+            })
+            return retVal;
     }
 }
 
