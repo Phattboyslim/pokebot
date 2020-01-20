@@ -37,22 +37,22 @@ export class PokemonStore {
     }
     async getNamesFromRapiAPI() {
         var retVal = null
-        axios({
-            "method":"GET",
-            "url":"https://pokemon-go1.p.rapidapi.com/pokemon_names.json",
-            "headers":{
-            "content-type":"application/octet-stream",
-            "x-rapidapi-host":"pokemon-go1.p.rapidapi.com",
-            "x-rapidapi-key":"4e23a33e0emsh55a6269c414188fp10370djsn6d976e399e42"
+        await axios({
+            "method": "GET",
+            "url": "https://pokemon-go1.p.rapidapi.com/pokemon_names.json",
+            "headers": {
+                "content-type": "application/octet-stream",
+                "x-rapidapi-host": "pokemon-go1.p.rapidapi.com",
+                "x-rapidapi-key": "4e23a33e0emsh55a6269c414188fp10370djsn6d976e399e42"
             }
-            })
-            .then((response: any)=>{
+        })
+            .then((response: any) => {
                 retVal = response
             })
-            .catch((error: any)=>{
-              console.log(error)
+            .catch((error: any) => {
+                console.log(error)
             })
-            return retVal;
+        return retVal;
     }
 }
 
