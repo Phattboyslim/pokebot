@@ -48,8 +48,13 @@ export class DiscordClient {
                 var obj = result;
                 for(var key in obj) {
                     var pokemonInStore = await store.searchByName(obj[key].name)
-                    console.log(pokemonInStore)
-                    console.log(obj[key])
+                    if(pokemonInStore == null) {
+                        await store.insert([{
+                            number: Number(key),
+                            name: obj[key].name
+                        }])
+                        console.log("Inserted: ", obj[key].name)
+                    }
                 }
             }
         })
