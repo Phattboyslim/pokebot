@@ -17,18 +17,14 @@ export class PokemonStore {
     }
 
     async searchByName(name: string) {
-        var retVal = null
         const q = this.datastore
             .createQuery("Pokemon")
             .filter('name', '=', name)
-        await this.datastore.runQuery(q, (err: any, entities: any, info: any) => {
-            console.log(err)
-            console.log(entities)
-            console.log(info)
+        var result = await this.datastore.runQuery(q, (err: any, entities: any, info: any) => {
             // entities = An array of records.
-            retVal = entities
+            return info[0]
         })
-        return retVal
+        return result
     }
 
     async get(key: string) {
