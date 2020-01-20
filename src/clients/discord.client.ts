@@ -42,23 +42,9 @@ export class DiscordClient {
                 channel.send("Ah yeet")
                 this.channels.push(channel)
             }
-            var pokeApiClient = new PokeapiClient();
             var store = new PokemonStore();
-            for (var i = 1; i < 6; i++) {
-                var result = await pokeApiClient.getGeneration(i)
-                if (!isNullOrUndefined(result)) {
-                    var pokemons = result.pokemon_species
-                    var list: Pokemon[] = pokemons.map((pokemon: any) => {
-                        var name = new CustomString(pokemon.name)
-                        var number = new CustomString(pokemon.url)
-                        return { name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter()) }
-                    })
-                    console.log(list)
-                    await store.insert(list)
-                }
-            }
-
-            
+            var result = await store.searchByName("Bulbasaur")
+            console.log(result)
         })
     }
     async onMessage() {

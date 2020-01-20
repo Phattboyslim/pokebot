@@ -16,6 +16,15 @@ export class PokemonStore {
         }
     }
 
+    async searchByName(name: string) {
+        const q = this.datastore
+            .createQuery("Pokemon")
+            .filter('name', '=', name)
+            .limit(1)
+
+        this.datastore.runQuery(q)
+    }
+
     async get(key: string) {
         try {
             return await this.datastore.get(key)
