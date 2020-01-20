@@ -46,7 +46,8 @@ export class DiscordClient {
             if(!isNullOrUndefined(result)) {
                 var pokemons = result.pokemon_species
                 var names = pokemons.map((pokemon: any) => {
-                    return new CustomString(pokemon.name).capitalizeFirstLetter()
+                    var name = new CustomString(pokemon.name)
+                    return name.capitalizeFirstLetter()
                 })
                 console.log(names)
             }
