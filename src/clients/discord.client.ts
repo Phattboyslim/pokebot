@@ -11,6 +11,7 @@ import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
 import { PokeapiClient } from "./pokeapi.client";
+import { Pokemon, PokemonStore } from "../stores/pokemon.store";
 
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString(), ChannelIds.RaidScanChannel.toString()]
 
@@ -42,7 +43,7 @@ export class DiscordClient {
                 this.channels.push(channel)
             }
             var pokeApiClient = new PokeapiClient();
-            var listNames: string[] = []
+            var listNames: Pokemon[] = []
             for (var i = 1; i < 6; i++) {
                 var result = await pokeApiClient.getGeneration(i)
                 if (!isNullOrUndefined(result)) {
@@ -55,7 +56,10 @@ export class DiscordClient {
                     listNames = listNames.concat(list);
                 }
             }
-            console.log(listNames)
+            var store = new PokemonStore();
+            store.insert(listNames)
+
+            
         })
     }
     async onMessage() {
