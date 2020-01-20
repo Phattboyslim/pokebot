@@ -7,7 +7,7 @@ export class PokemonStore {
         try {
             return await this.datastore.save({
                 key: this.datastore.key('Pokemon'),
-                data: pokemon
+                data: JSON.stringify(pokemon)
             })
         } catch(error) {
             console.log(error)
