@@ -43,8 +43,15 @@ export class DiscordClient {
                 this.channels.push(channel)
             }
             var store = new PokemonStore();
-            var result = await store.getNamesFromRapiAPI()
-            console.log(result)
+            var result: any = await store.getNamesFromRapiAPI()
+            if (!isNullOrUndefined(result)){
+                var obj = JSON.parse(result);
+                for(var key in obj) {
+                    if(obj.hasOwnProperty(key)) {
+                        console.log(obj[key]);
+                    }
+                }
+            }
         })
     }
     async onMessage() {
