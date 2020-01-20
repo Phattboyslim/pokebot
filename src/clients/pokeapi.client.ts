@@ -12,7 +12,7 @@ export class PokeapiClient {
             .then(function (response: any) {
                 // handle success
                 if(response.status === 200) {
-                    return JSON.parse(response.body);
+                    return response.body;
                 } else {
                     return "Leeroy jenkins"
                 }
