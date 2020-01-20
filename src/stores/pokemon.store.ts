@@ -20,7 +20,6 @@ export class PokemonStore {
         const q = this.datastore
             .createQuery("Pokemon")
             .filter('name', '=', name)
-            .limit(1)
 
         var result = await this.datastore.runQuery(q, (err: any, entities: any, info: any) => {
             // entities = An array of records.
