@@ -49,7 +49,7 @@ export class DiscordClient {
                     var name = new CustomString(pokemon.name)
                     return name.capitalizeFirstLetter()
                 })
-                console.log(names)
+                Promise.all(names).then(data => console.log(data));
             }
         })
     }
