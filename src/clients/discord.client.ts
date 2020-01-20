@@ -91,6 +91,6 @@ export class CustomString {
         this._input = input;
     }
     capitalizeFirstLetter() {
-        return this._input[0].toUpperCase + this._input.substring(1) 
+        return this._input[0].toUpperCase() + this._input.substring(1) 
     }
 }
