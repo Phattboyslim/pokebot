@@ -42,8 +42,12 @@ export class DiscordClient {
                 this.channels.push(channel)
             }
             var pokeApiClient = new PokeapiClient();
-            var result = pokeApiClient.getGeneration(1)
-            console.log(result)
+            var result = await pokeApiClient.getGeneration(1)
+            if(!isNullOrUndefined(result)) {
+                console.log(result)
+            } else {
+                console.log("Oops")
+            }
         })
     }
     async onMessage() {

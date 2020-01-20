@@ -11,7 +11,11 @@ export class PokeapiClient {
         axios.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
             .then(function (response: any) {
                 // handle success
-                console.log(response);
+                if(response.status === 200) {
+                    return JSON.parse(response.body);
+                } else {
+                    return "Leeroy jenkins"
+                }
             })
             .catch(function (error: any) {
                 // handle error
