@@ -22,7 +22,10 @@ export class PokemonStore {
             .filter('name', '=', name)
             .limit(1)
 
-        await this.datastore.runQuery(q)
+        this.datastore.runQuery(q, (err: any, entities: any, info: any) => {
+            // entities = An array of records.
+            return entities
+          })
     }
 
     async get(key: string) {
