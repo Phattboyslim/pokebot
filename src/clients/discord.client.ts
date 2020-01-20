@@ -42,15 +42,18 @@ export class DiscordClient {
                 this.channels.push(channel)
             }
             var pokeApiClient = new PokeapiClient();
-            var result = await pokeApiClient.getGeneration(1)
-            if(!isNullOrUndefined(result)) {
-                var pokemons = result.pokemon_species
-                var list = pokemons.map((pokemon: any) => {
-                    var name = new CustomString(pokemon.name)
-                    var number = new CustomString(pokemon.url)
-                    return {name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter())}
-                })
-                console.log(list)
+            var listNames: string[] = []
+            for (var i = 1; i < 6; i++) {
+                var result = await pokeApiClient.getGeneration(i)
+                if (!isNullOrUndefined(result)) {
+                    var pokemons = result.pokemon_species
+                    var list = pokemons.map((pokemon: any) => {
+                        var name = new CustomString(pokemon.name)
+                        var number = new CustomString(pokemon.url)
+                        return { name: name.capitalizeFirstLetter(), number: Number(number.getLastArrayItemSplitOnSlashWithASlashAsLastCharacter()) }
+                    })
+                    return listNames.concat(list);
+                }
             }
         })
     }
@@ -86,16 +89,16 @@ export class DiscordClient {
     }
 }
 
-export class CustomString { 
+export class CustomString {
     private _input: string;
     constructor(input: string) {
         this._input = input;
     }
     capitalizeFirstLetter() {
-        return this._input[0].toUpperCase() + this._input.substring(1) 
+        return this._input[0].toUpperCase() + this._input.substring(1)
     }
-    getLastArrayItemSplitOnSlashWithASlashAsLastCharacter(){
+    getLastArrayItemSplitOnSlashWithASlashAsLastCharacter() {
         var array = this._input.split('\/')
-        return array[array.length-2]
+        return array[array.length - 2]
     }
 }
