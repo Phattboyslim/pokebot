@@ -1,4 +1,4 @@
-import http from "http"
+const axios = require('axios')
 
 export class PokeapiClient {
     private baseUrl = "http://pokeapi.co/api/v2";
@@ -7,21 +7,19 @@ export class PokeapiClient {
 
     }
 
-    getGeneration(gen: number) {
-
-        http.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`, function(res){
-            var body = '';
-            res.headers.accept = "application/json"
-            res.on('data', function(chunk){
-                body += chunk;
+    async getGeneration(gen: number) {
+        axios.get(`${this.baseUrl}/${PokeApiEndPoints.Generation.toString()}/${gen}`)
+            .then(function (response: any) {
+                // handle success
+                console.log(response);
+            })
+            .catch(function (error: any) {
+                // handle error
+                console.log(error);
+            })
+            .finally(function () {
+                console.log('klaar')
             });
-        
-            res.on('end', function(){
-                console.log(body)
-            });
-        }).on('error', function(e){
-              console.log("Got an error: ", e);
-        });
     }
 }
 
