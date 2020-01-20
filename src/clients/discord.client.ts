@@ -10,10 +10,7 @@ import { ChannelIds } from "../models/channelIds.enum";
 import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
-import { StringArray } from "./StringArray";
-import { ValidationRules } from "./ValidationRules";
 import { PokeapiClient } from "./pokeapi.client";
-var moment = require("moment")
 
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString(), ChannelIds.RaidScanChannel.toString()]
 

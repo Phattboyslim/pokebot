@@ -1,7 +1,7 @@
 import http from "http"
 
 export class PokeapiClient {
-    private baseUrl = "https://pokeapi.co/api/v2";
+    private baseUrl = "http://pokeapi.co/api/v2";
 
     constructor() {
 
