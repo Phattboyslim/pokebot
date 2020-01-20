@@ -46,6 +46,7 @@ export class DiscordClient {
             var result: any = await store.getNamesFromRapiAPI()
             if (!isNullOrUndefined(result)){
                 var obj = JSON.parse(result);
+                console.log(obj)
                 for(var key in obj) {
                     console.log(key)
                     if(obj.hasOwnProperty(key)) {
