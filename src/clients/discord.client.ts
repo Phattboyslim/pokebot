@@ -42,21 +42,6 @@ export class DiscordClient {
                 channel.send("Ah yeet")
                 this.channels.push(channel)
             }
-            var store = new PokemonStore();
-            var result: any = await store.getNamesFromRapiAPI()
-            if (!isNullOrUndefined(result)){
-                var obj = result;
-                for(var key in obj) {
-                    var pokemonInStore = await store.searchByName(obj[key].name)
-                    if(pokemonInStore == null) {
-                        await store.insert([{
-                            number: Number(key),
-                            name: obj[key].name
-                        }])
-                        console.log("Inserted: ", obj[key].name)
-                    }
-                }
-            }
         })
     }
     async onMessage() {

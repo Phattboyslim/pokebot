@@ -1,5 +1,8 @@
+import { injectable } from "inversify";
+
 const { Datastore } = require("@google-cloud/datastore")
 
+@injectable()
 export class RaidStore {
     private datastore = new Datastore();
 

@@ -1,5 +1,9 @@
+import { injectable } from "inversify";
+
 const { Datastore } = require("@google-cloud/datastore")
 const axios = require('axios').default;
+
+@injectable()
 export class PokemonStore {
     private datastore = new Datastore();
 

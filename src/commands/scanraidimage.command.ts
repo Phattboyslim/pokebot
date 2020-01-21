@@ -4,8 +4,9 @@ import { isNullOrUndefined } from "util";
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
-import { ValidationRules } from "../clients/ValidationRules";
+import { TextValidator } from "../clients/text.validator";
 import { Raid, RaidStore } from "../stores/raid.store";
+import { PokemonStore } from "../stores/pokemon.store";
 var uuidv4 = require('uuid/v4')
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
@@ -15,9 +16,10 @@ export class ScanRaidImageCommand {
             .do(async (args: string[], rawArgs: string, message: Message) => {
                 var returnMessage = "Ti etwa hjil skjif gegoan"
                 var client: GoogleCloudClient = dependencyInjectionContainer.get<GoogleCloudClient>(GoogleCloudClient)
-                if (isNullOrUndefined(client)) {
+                var pokemonStore: PokemonStore = dependencyInjectionContainer.get<PokemonStore>(PokemonStore)
+                var textValidator: TextValidator = dependencyInjectionContainer.get<TextValidator>(TextValidator)
+                if (isNullOrUndefined(client) || isNullOrUndefined(pokemonStore)) {
                     return this.handleError(message, "Something went wrong. Please try again. If this problem persists, please contact support.")
-
                 }
                 if (message.channel.id != ChannelIds.RaidScanChannel.toString()) {
                     return this.handleError(message, "You are not allowed to do this here!")
@@ -30,7 +32,7 @@ export class ScanRaidImageCommand {
                 if (isNullOrUndefined(textResult)) {
                     return this.handleError(message, "Something went wrong getting text result from your image. Please try again. If this problem persists, please contact support.")
                 }
-                var pokemonName = ValidationRules.validatePokemonName(textResult); var gymName = ValidationRules.validateName(textResult); var timeLeft = ValidationRules.validateTime(textResult)
+                var pokemonName = textValidator.validatePokemonName(textResult); var gymName = textValidator.validateName(textResult); var timeLeft = textValidator.validateTime(textResult)
                 if (isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
                     return this.handleError(message, "Something went wrong sorting the text from the text result scan. Please try again. If this problem persists, please contact support.")
                 }
