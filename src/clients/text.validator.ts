@@ -33,6 +33,8 @@ export class TextValidator {
             var databaseResult = await this.pokemonStore.searchByName(selectedItem);
             if(!isNullOrUndefined(databaseResult)) {
                 if(!isNullOrUndefined(databaseResult[0])) {
+                    console.log("First item: ", databaseResult[0])
+                    console.log("First in first: ", databaseResult[0][0])
                     retVal = (databaseResult[0][0] as any).name
                     isValid = true
                     console.log("Name from pokemon obj: ", retVal)
