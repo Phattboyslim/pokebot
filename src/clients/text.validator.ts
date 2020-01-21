@@ -23,6 +23,10 @@ export class TextValidator {
     }
 
     async validatePokemonName(lines: string[]) {
+        // Loop array items from behind and search for pokemon name in database. 
+        // If not found in database, implement custom conditions to validate the string.
+        // If we cant find a pokemon name, we will asume it's an unhatched egg.
+        
         var stringArray = new StringArray(lines);
         var retries = lines.length
         var isValid = false;
