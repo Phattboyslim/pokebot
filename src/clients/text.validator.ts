@@ -31,13 +31,13 @@ export class TextValidator {
         while (retries-- > 0 && !isValid && itemIndex++ < lines.length) {
             var selectedItem = stringArray.getNth(itemIndex)
             var databaseResult = await this.pokemonStore.searchByName(selectedItem);
-            if(!isNullOrUndefined(databaseResult)) {
-                if(!isNullOrUndefined(databaseResult[0])) {
-                    console.log("First item: ", databaseResult[0])
-                    console.log("First in first: ", databaseResult[0][0])
-                    retVal = (databaseResult[0][0] as any).name
-                    isValid = true
-                    console.log("Name from pokemon obj: ", retVal)
+            if (!isNullOrUndefined(databaseResult)) {
+                if (!isNullOrUndefined(databaseResult[0])) {
+                    if (!isNullOrUndefined(databaseResult[0][0])) {
+                        retVal = (databaseResult[0][0] as any).name
+                        isValid = true
+                        console.log("Name from pokemon obj: ", retVal)
+                    }
                 }
             }
             if (!isValid && selectedItem.split(' ').length == 1 && TextValidator.matchesFourCharacters(selectedItem)) {
