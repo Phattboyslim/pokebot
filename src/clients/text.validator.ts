@@ -3,6 +3,7 @@ import moment from "moment"
 import { injectable } from "inversify";
 import { PokemonStore } from "../stores/pokemon.store";
 import { dependencyInjectionContainer } from "../di-container";
+import { isNullOrUndefined } from "util";
 
 @injectable()
 export class TextValidator {
@@ -21,7 +22,7 @@ export class TextValidator {
         return new RegExp("[a-z]{4,}").test(input);
     }
 
-    validatePokemonName(lines: string[]) {
+    async validatePokemonName(lines: string[]) {
         var stringArray = new StringArray(lines);
         var retries = lines.length
         var isValid = false;
@@ -29,8 +30,11 @@ export class TextValidator {
         var retVal = ""
         while (retries-- > 0 && !isValid && itemIndex++ < lines.length) {
             var selectedItem = stringArray.getNth(itemIndex)
-            var databaseResult = this.pokemonStore.searchByName(selectedItem);
+            var databaseResult = await this.pokemonStore.searchByName(selectedItem);
             console.log("Got something from database: ", databaseResult)
+            if(!isNullOrUndefined(databaseResult)) {
+                console.log("First obj in response: ", databaseResult[0])
+            }
             if (selectedItem && selectedItem.split(' ').length == 1 && TextValidator.matchesFourCharacters(selectedItem)) {
                 retVal = selectedItem
                 isValid = true
