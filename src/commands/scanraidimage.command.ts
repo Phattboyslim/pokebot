@@ -32,7 +32,7 @@ export class ScanRaidImageCommand {
                 if (isNullOrUndefined(textResult)) {
                     return this.handleError(message, "Something went wrong getting text result from your image. Please try again. If this problem persists, please contact support.")
                 }
-                var pokemonName = textValidator.validatePokemonName(textResult); var gymName = textValidator.validateName(textResult); var timeLeft = textValidator.validateTime(textResult)
+                var pokemonName = await textValidator.validatePokemonName(textResult); var gymName = textValidator.validateName(textResult); var timeLeft = textValidator.validateTime(textResult)
                 if (isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
                     return this.handleError(message, "Something went wrong sorting the text from the text result scan. Please try again. If this problem persists, please contact support.")
                 }
