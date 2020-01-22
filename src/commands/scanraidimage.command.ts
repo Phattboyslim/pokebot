@@ -5,7 +5,7 @@ import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
 import { TextValidator } from "../clients/text.validator";
-import { Raid, RaidStore } from "../stores/raid.store";
+import { RaidStore } from "../stores/raid.store";
 import { PokemonStore } from "../stores/pokemon.store";
 var uuidv4 = require('uuid/v4')
 export class ScanRaidImageCommand {
@@ -41,20 +41,14 @@ export class ScanRaidImageCommand {
                     isHatched = true
                 }
 
-                var imageResult = await client.readImageML(attachment.url);
-                if (isNullOrUndefined(imageResult)) {
-                    return this.handleError(message, "Something went wrong getting an image scan result. Please try again. If this problem persists, please contact support.")
-                }
-                var tiers = imageResult.payload.filter((x: any) => x.displayName === "tier");
-                if (isNullOrUndefined(tiers)) {
-                    return this.handleError(message, "Something went wrong fetching tiers from image. Please try again. If this problem persists, please contact support.");
-                }
+                var tiers = [0]
+
                 if (isHatched)
                     returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`;
                 else
                     returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches in ${timeLeft.toString().split('.')[0]} minutes`;
                 
-                this.handleSuccess(message, returnMessage, uuidv4(), new Date(), gymName, pokemonName, isHatched, tiers);
+                this.handleSuccess(message, returnMessage, uuidv4(), new Date(), gymName, pokemonName, isHatched, tiers.length);
             })
     }
 

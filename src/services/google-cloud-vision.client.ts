@@ -24,32 +24,34 @@ export class GoogleCloudClient {
         }
     }
 
-    async readImageML(url: string) {
-        // Create client for prediction service.
+    // Use this when we have alot of funding for the project :) 
+    
+    // async readImageML(url: string) {
+    //     // Create client for prediction service.
 
-        const projectId = `647554061248`;
-        const computeRegion = `us-central1`;
-        // const modelId = `IOD6596520010842112000`;
-        const modelId = "IOD978842425650839552";
-        // Get the full path of the model.
-        const modelFullId = this.gcs.imageClient.modelPath(projectId, computeRegion, modelId);
+    //     const projectId = `647554061248`;
+    //     const computeRegion = `us-central1`;
+    //     // const modelId = `IOD6596520010842112000`;
+    //     const modelId = "IOD978842425650839552";
+    //     // Get the full path of the model.
+    //     const modelFullId = this.gcs.imageClient.modelPath(projectId, computeRegion, modelId);
 
-        // Get image as byte array
-        const bytes = await axios.get(url, { responseType: 'arraybuffer' })
-            .then((response: any) => Buffer.from(response.data, 'binary'))
+    //     // Get image as byte array
+    //     const bytes = await axios.get(url, { responseType: 'arraybuffer' })
+    //         .then((response: any) => Buffer.from(response.data, 'binary'))
         
-        // Create payload object to send to the model's API
-        const payload: any = {};
-        payload.image = { imageBytes: bytes };
+    //     // Create payload object to send to the model's API
+    //     const payload: any = {};
+    //     payload.image = { imageBytes: bytes };
 
-        // Get prediction response from api
-        const [response] = await this.gcs.imageClient.predict(
-            {
-                name: modelFullId,
-                payload
-            });
-        return response;
-    }
+    //     // Get prediction response from api
+    //     const [response] = await this.gcs.imageClient.predict(
+    //         {
+    //             name: modelFullId,
+    //             payload
+    //         });
+    //     return response;
+    // }
 }
 export interface IGCPayload {
     image: IGCImage
