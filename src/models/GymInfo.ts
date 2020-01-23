@@ -1,8 +1,7 @@
 import { IGymInfo } from "../interfaces/IGymInfo";
-export class GymInfo implements IGymInfo {
+export class GymInfo {
     titel: string | null;
     pokemon: string | null;
-    cp: string | null;
     private _time_left: string | null;
     get dtEnd() {
         var timeObjects = this._time_left!!.split(':');
@@ -15,12 +14,11 @@ export class GymInfo implements IGymInfo {
         return this._time_left;
     }
     constructor(info: string[]) {
-        this.titel = info[3];
-        this.cp = info[4];
-        this.pokemon = info[5];
-        this._time_left = info[6];
+        this.titel = info[0];
+        this.pokemon = info[1];
+        this._time_left = info[2];
     }
     toString() {
-        return `Found a ${this.pokemon} with ${this.cp} at${this.titel} - Ends at: ${this.dtEnd}`;
+        return `Found a ${this.pokemon} at${this.titel} - Ends at: ${this.dtEnd}`;
     }
 }

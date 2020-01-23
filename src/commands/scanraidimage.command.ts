@@ -1,12 +1,16 @@
 import { MessageHandler } from "discord-message-handler";
 import { Message, TextChannel } from "discord.js";
-import { isNullOrUndefined } from "util";
+import { isNullOrUndefined, isNull } from "util";
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
 import { TextValidator } from "../clients/text.validator";
 import { RaidStore } from "../stores/raid.store";
 import { PokemonStore } from "../stores/pokemon.store";
+import { pokemon } from "./../resources/statics/pokemon"
+import { CustomString } from "../clients/discord.client";
+import { GymInfo } from "../models/GymInfo";
+const arrayWithGenerations: any[] = [pokemon.gen1, pokemon.gen2, pokemon.gen3, pokemon.gen4, pokemon.gen5];
 var uuidv4 = require('uuid/v4')
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
@@ -28,27 +32,103 @@ export class ScanRaidImageCommand {
                 if (isNullOrUndefined(attachment.url) && attachment.url != "") {
                     return this.handleError(message, "Something went wrong fetching attachement url. Please try again. If this problem persists, please contact support.")
                 }
-                var textResult = await client.readImage(attachment.url)
-                if (isNullOrUndefined(textResult)) {
+                var textResults: string[] = await client.readImage(attachment.url)
+                if (isNullOrUndefined(textResults)) {
                     return this.handleError(message, "Something went wrong getting text result from your image. Please try again. If this problem persists, please contact support.")
                 }
-                var pokemonName = await textValidator.validatePokemonName(textResult); var gymName = textValidator.validateName(textResult); var timeLeft = textValidator.validateTime(textResult)
-                if (isNullOrUndefined(gymName) || isNullOrUndefined(timeLeft)) {
-                    return this.handleError(message, "Something went wrong sorting the text from the text result scan. Please try again. If this problem persists, please contact support.")
+
+                // start reading lines from textResult
+
+                // 0:"4G+"
+                // 1:"87% I 16:52"
+                // 2:"EX RAID GYM"
+                // 3:"Standbeeld Albrecht"
+                // 4:"Rodenbach"
+                // 5:"0:48:32"
+                // 6:"Walk closer to interact with this Gym."
+                // 7:""
+
+                var resultWithNumbers: any[] = []
+                var resultWithoutNumbers: any[] = []
+
+                textResults.forEach((result: string) => {
+                    if (new RegExp("[0-9]").test(result))
+                        resultWithNumbers.push(result)
+                    else
+                        resultWithoutNumbers.push(result);
+                })
+
+                // Check if any contains EX RAID GYM
+                var exRaidGym: boolean = resultWithoutNumbers.filter(x => x == "EX RAID GYM").length == 1
+                if (exRaidGym) {
+                    resultWithoutNumbers = resultWithoutNumbers.filter(result => result != "EX RAID GYM")
                 }
-                var isHatched = false
-                if (!isNullOrUndefined(pokemonName) && pokemonName.trim() != "") {
-                    isHatched = true
+                // Check if any is a pokemon name <- means if we find a match the egg is already hatched
+                var pokemonMatch: any = null;
+                var gymName = ""
+
+                resultWithoutNumbers.forEach((textResult: string) => {
+                    if (pokemonMatch == null) {
+                        var resultLowerCased: string = textResult.normalize().toLowerCase();
+                        var resultProperlyFormatted = ""
+
+                        // Need to loop because the text reader shows h as russian look-a-like
+                        while (resultLowerCased.length != resultProperlyFormatted.length) {
+                            resultLowerCased.split("").forEach((character: string) => {
+                                if (character == "н") {
+                                    resultProperlyFormatted = resultProperlyFormatted + "h"
+                                } else if (character == "e") {
+                                    resultProperlyFormatted = resultProperlyFormatted + "e"
+                                } else {
+                                    resultProperlyFormatted = resultProperlyFormatted + character
+                                }
+                            })
+                        }
+                        if (pokemonMatch == null) {
+                            arrayWithGenerations.forEach((generation: any) => {
+                                if (pokemonMatch == null) {
+                                    generation.pokemon_species.forEach((mon: any) => {
+                                        if (mon.name === resultProperlyFormatted) {
+                                            pokemonMatch = resultProperlyFormatted
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                })
+
+                var timeLeft = resultWithNumbers.filter(x => TextValidator.hasNthOccurencesOf(x, ":") == 2)[0].substring(0, 8)
+
+                var isHatched = !isNull(pokemonMatch)
+
+                var gymName = ""
+
+                if (isHatched) {
+                    // asume the gym name is above the pokemon name
+                    // const isMatch = (element: string) => element.toLowerCase() === pokemonMatch.toLowerCase();
+                    var findRes = resultWithoutNumbers.filter(x=> x.indexOf(pokemonMatch.substring(2)) > -1)[0]
+                    gymName = resultWithoutNumbers[resultWithoutNumbers.indexOf(findRes) - 1]
+                    
+                } else {
+                    // First case [0] is A part of the name [1] is the rest of the name [2] is distance alert
+                    // Second case [0] is the name [1] is random shiiiet and [2] is the distance 
+                    // Third case [0] is the name [1] is empty stringk
+                    // Fourth case [0] is the name [1] is random shieeeet and [2] is the distance alert
+                    // gunna tak [0] as the name of the gym if not hatched 
+                    gymName = resultWithoutNumbers[0];
                 }
 
                 var tiers = [0]
 
+                var ino = new GymInfo([gymName, pokemonMatch, timeLeft])
+
                 if (isHatched)
-                    returnMessage = `A ${pokemonName}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears in ${timeLeft.toString().split('.')[0]} minutes`;
+                    returnMessage = `A ${ino.pokemon}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears at ${ino.dtEnd}`;
                 else
-                    returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches in ${timeLeft.toString().split('.')[0]} minutes`;
-                
-                this.handleSuccess(message, returnMessage, uuidv4(), new Date(), gymName, pokemonName, isHatched, tiers.length);
+                    returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches at ${ino.dtEnd}`;
+
+                this.handleSuccess(message, returnMessage, uuidv4(), new Date(), "gymName", "pokemonName", isHatched, tiers.length);
             })
     }
 
@@ -59,7 +139,7 @@ export class ScanRaidImageCommand {
     private static async handleSuccess(message: Message, returnMessage: string, guid: string, dateEnd: Date, gymName: string, pokemonName: string, isHatched: boolean, tiers: number) {
         var store: RaidStore = new RaidStore();
         await store.insert({
-            Guid: guid, 
+            Guid: guid,
             DateEnd: dateEnd,
             GymName: gymName,
             PokemonName: pokemonName,
