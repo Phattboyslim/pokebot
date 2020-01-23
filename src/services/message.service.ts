@@ -9,6 +9,7 @@ import { ChannelIds } from "../models/channelIds.enum";
 import { PokemonCounter } from "./pokemon.service";
 import { IRaid } from "../interfaces/raid.interface";
 import { IPlayer } from "../interfaces/player.interface";
+import { DiscordHelper } from "../helpers/discord.helper";
 
 const botId = '655411751709310999'
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
@@ -31,22 +32,7 @@ export class MessageService implements IMessageService {
             .split(' ')
             .filter(Boolean)
     }
-    findDisplayName(message: Message) {
-        return message.guild.members.find(x => x.id === message.author.id).displayName;
-    }
-    findDisplayAvatar(message: Message) {
-        return message.guild.members.find(x => x.id === message.author.id).user.avatarURL ? message.guild.members.find(x => x.id === message.author.id).user.avatarURL : "https://www.shareicon.net/data/128x128/2015/09/21/644252_question_512x512.png"
-    }
-    findDisplayUserRoleColor(message: Message) {
-        var member = message.guild.members.find(x => x.id === message.author.id)
-        if(!isNullOrUndefined(member)) {
-            var colorRole = member.colorRole
-            if(!isNullOrUndefined(colorRole)){
-                return colorRole.hexColor
-            }
-        }
-        return "#0084FF"
-    }
+    
     async handleRaidStart() {
         var response = ""
         this.message!.delete();
@@ -55,10 +41,10 @@ export class MessageService implements IMessageService {
             let richEmbed = new RichEmbed()
                 .setTitle(`🗡️ ${this.commandArguments.splice(2).join(' ')} 🗡️`)
                 .setTimestamp()
-                .setFooter(`${this.findDisplayName(this.message!)}`, `${this.findDisplayAvatar(this.message!)}`)
+                .setFooter(`${DiscordHelper.findDisplayName(this.message!)}`, `${DiscordHelper.findDisplayAvatar(this.message!)}`)
                 .setDescription(raidingInfo)
                 .setThumbnail("https://pokemongohub.net/wp-content/uploads/2019/10/darkrai-halloween.jpg")
-                .setColor(this.findDisplayUserRoleColor(this.message!))
+                .setColor(DiscordHelper.findDisplayUserRoleColor(this.message!))
             await this.message!.channel.send(richEmbed);
         } else {
             response = "This command only works in raid channels\n"

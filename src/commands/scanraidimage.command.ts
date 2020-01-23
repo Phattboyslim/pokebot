@@ -1,5 +1,5 @@
 import { MessageHandler } from "discord-message-handler";
-import { Message, TextChannel } from "discord.js";
+import { Message, TextChannel, RichEmbed } from "discord.js";
 import { isNullOrUndefined, isNull } from "util";
 import { GoogleCloudClient } from "../services/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
@@ -10,18 +10,24 @@ import { PokemonStore } from "../stores/pokemon.store";
 import { pokemon } from "./../resources/statics/pokemon"
 import { CustomString } from "../clients/discord.client";
 import { GymInfo } from "../models/GymInfo";
+import { DiscordHelper } from "../helpers/discord.helper";
 const arrayWithGenerations: any[] = [pokemon.gen1, pokemon.gen2, pokemon.gen3, pokemon.gen4, pokemon.gen5];
 var uuidv4 = require('uuid/v4')
 export class ScanRaidImageCommand {
     static setup(handler: MessageHandler) {
         handler.onCommand("!scan")
-            .minArgs(0)
-            .whenInvalid("Tis ni juste")
+            .minArgs(1)
+            .matches('([a-z]|[A-Z])([1-5]{1})')
+            .whenInvalid("Heb je vergeten de T1-5 toe te voegen?")
             .do(async (args: string[], rawArgs: string, message: Message) => {
-                var returnMessage = "Ti etwa hjil skjif gegoan"
+                var returnMessage: RichEmbed | string = "Ti etwa hjil skjif gegoan"
                 var client: GoogleCloudClient = dependencyInjectionContainer.get<GoogleCloudClient>(GoogleCloudClient)
                 var pokemonStore: PokemonStore = dependencyInjectionContainer.get<PokemonStore>(PokemonStore)
-                var textValidator: TextValidator = dependencyInjectionContainer.get<TextValidator>(TextValidator)
+
+                var tiers = 0
+                if(!isNullOrUndefined(args) && !isNullOrUndefined(args[0]) && args[0].length === 2) {
+                    tiers = Number([args[0][1]])
+                }
                 if (isNullOrUndefined(client) || isNullOrUndefined(pokemonStore)) {
                     return this.handleError(message, "Something went wrong. Please try again. If this problem persists, please contact support.")
                 }
@@ -32,25 +38,15 @@ export class ScanRaidImageCommand {
                 if (isNullOrUndefined(attachment.url) && attachment.url != "") {
                     return this.handleError(message, "Something went wrong fetching attachement url. Please try again. If this problem persists, please contact support.")
                 }
-                var textResults: string[] = await client.readImage(attachment.url)
+                var textResults: string[] | null = await client.readImage(attachment.url)
                 if (isNullOrUndefined(textResults)) {
                     return this.handleError(message, "Something went wrong getting text result from your image. Please try again. If this problem persists, please contact support.")
                 }
 
-                // start reading lines from textResult
-
-                // 0:"4G+"
-                // 1:"87% I 16:52"
-                // 2:"EX RAID GYM"
-                // 3:"Standbeeld Albrecht"
-                // 4:"Rodenbach"
-                // 5:"0:48:32"
-                // 6:"Walk closer to interact with this Gym."
-                // 7:""
-
                 var resultWithNumbers: any[] = []
                 var resultWithoutNumbers: any[] = []
 
+                // Split arrays into string with and without numbers
                 textResults.forEach((result: string) => {
                     if (new RegExp("[0-9]").test(result))
                         resultWithNumbers.push(result)
@@ -65,31 +61,18 @@ export class ScanRaidImageCommand {
                 }
                 // Check if any is a pokemon name <- means if we find a match the egg is already hatched
                 var pokemonMatch: any = null;
-                var gymName = ""
 
                 resultWithoutNumbers.forEach((textResult: string) => {
                     if (pokemonMatch == null) {
-                        var resultLowerCased: string = textResult.normalize().toLowerCase();
-                        var resultProperlyFormatted = ""
-
-                        // Need to loop because the text reader shows h as russian look-a-like
-                        while (resultLowerCased.length != resultProperlyFormatted.length) {
-                            resultLowerCased.split("").forEach((character: string) => {
-                                if (character == "н") {
-                                    resultProperlyFormatted = resultProperlyFormatted + "h"
-                                } else if (character == "e") {
-                                    resultProperlyFormatted = resultProperlyFormatted + "e"
-                                } else {
-                                    resultProperlyFormatted = resultProperlyFormatted + character
-                                }
-                            })
-                        }
+                        var resultLowerCased: string = textResult.toLowerCase();
+                        // checking each generation their pokemon_species
                         if (pokemonMatch == null) {
                             arrayWithGenerations.forEach((generation: any) => {
                                 if (pokemonMatch == null) {
+                                    // checking every pokemon in that generation
                                     generation.pokemon_species.forEach((mon: any) => {
-                                        if (mon.name === resultProperlyFormatted) {
-                                            pokemonMatch = resultProperlyFormatted
+                                        if (mon.name === resultLowerCased) {
+                                            pokemonMatch = textResult
                                         }
                                     })
                                 }
@@ -98,37 +81,37 @@ export class ScanRaidImageCommand {
                     }
                 })
 
+                // Get the time left until hatch or disapear
                 var timeLeft = resultWithNumbers.filter(x => TextValidator.hasNthOccurencesOf(x, ":") == 2)[0].substring(0, 8)
 
+                // Determine isHatched based on found a pokemon name
                 var isHatched = !isNull(pokemonMatch)
 
                 var gymName = ""
 
                 if (isHatched) {
                     // asume the gym name is above the pokemon name
-                    // const isMatch = (element: string) => element.toLowerCase() === pokemonMatch.toLowerCase();
                     var findRes = resultWithoutNumbers.filter(x=> x.indexOf(pokemonMatch.substring(2)) > -1)[0]
-                    gymName = resultWithoutNumbers[resultWithoutNumbers.indexOf(findRes) - 1]
-                    
+                    gymName = resultWithoutNumbers[resultWithoutNumbers.indexOf(findRes) - 1]  
                 } else {
-                    // First case [0] is A part of the name [1] is the rest of the name [2] is distance alert
-                    // Second case [0] is the name [1] is random shiiiet and [2] is the distance 
-                    // Third case [0] is the name [1] is empty stringk
-                    // Fourth case [0] is the name [1] is random shieeeet and [2] is the distance alert
-                    // gunna tak [0] as the name of the gym if not hatched 
+                    // in 4 out 5 times it was this first element so taking first
                     gymName = resultWithoutNumbers[0];
                 }
+                
+                var info = new GymInfo([gymName, pokemonMatch, timeLeft])
+                returnMessage = new RichEmbed()
+                    .setFooter(`${DiscordHelper.findDisplayName(message!)}`, `${DiscordHelper.findDisplayAvatar(message!)}`)
+                
+                if (isHatched) {
+                    returnMessage.setTitle(`T${tiers} - ${info.pokemon}`)
+                    returnMessage.setDescription(`Gym: ${info.titel!}.\nIt disapears at ${info.dtEnd}`);
+                }
+                else {
+                    returnMessage.setTitle(`T${tiers} - Unhatched`)
+                    returnMessage.setDescription(`Gym: ${info.titel!}.\nIt hatches at ${info.dtEnd}`);
+                }
 
-                var tiers = [0]
-
-                var ino = new GymInfo([gymName, pokemonMatch, timeLeft])
-
-                if (isHatched)
-                    returnMessage = `A ${ino.pokemon}(T${tiers.length}) was posted at the gym: ${gymName}.\nIt disapears at ${ino.dtEnd}`;
-                else
-                    returnMessage = `A T${tiers.length} Egg was posted at the gym: ${gymName}. It hatches at ${ino.dtEnd}`;
-
-                this.handleSuccess(message, returnMessage, uuidv4(), new Date(), "gymName", "pokemonName", isHatched, tiers.length);
+                this.handleSuccess(message, returnMessage, uuidv4(), new Date(), info.titel!, info.pokemon!, isHatched, tiers);
             })
     }
 
@@ -136,7 +119,7 @@ export class ScanRaidImageCommand {
         message.author.send(error);
         message.delete();
     }
-    private static async handleSuccess(message: Message, returnMessage: string, guid: string, dateEnd: Date, gymName: string, pokemonName: string, isHatched: boolean, tiers: number) {
+    private static async handleSuccess(message: Message, returnMessage: RichEmbed, guid: string, dateEnd: Date, gymName: string, pokemonName: string, isHatched: boolean, tiers: number) {
         var store: RaidStore = new RaidStore();
         await store.insert({
             Guid: guid,
@@ -146,6 +129,7 @@ export class ScanRaidImageCommand {
             IsHatched: isHatched,
             Tiers: tiers
         });
-        (message.guild.channels.get('655418834358108220') as TextChannel).send(returnMessage)
+        (message.guild.channels.get('655418834358108220') as TextChannel).sendEmbed(returnMessage)
     }
 }
+
