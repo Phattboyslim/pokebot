@@ -10,11 +10,15 @@ import { ChannelIds } from "../models/channelIds.enum";
 import { CounterCommand } from "../commands/counter.command";
 import { JoinCommand } from "../commands/join.command"
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
-import { PokeapiClient } from "./pokeapi.client";
-import { Pokemon, PokemonStore } from "../stores/pokemon.store";
 
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString(), ChannelIds.RaidScanChannel.toString()]
-
+const setupCommands = (handler: MessageHandler) => {
+    RaidCommand.setup(handler)
+    RegisterRankCommand.setup(handler)
+    CounterCommand.setup(handler)
+    JoinCommand.setup(handler)
+    ScanRaidImageCommand.setup(handler)
+}
 export class DiscordClient {
 
     client: Client = new Client()
@@ -24,11 +28,7 @@ export class DiscordClient {
 
     channels: TextChannel[] = []
     constructor() {
-        RaidCommand.setup(this.handler)
-        RegisterRankCommand.setup(this.handler)
-        CounterCommand.setup(this.handler)
-        JoinCommand.setup(this.handler)
-        ScanRaidImageCommand.setup(this.handler)
+       setupCommands(this.handler)
     }
 
     login() {
@@ -39,7 +39,6 @@ export class DiscordClient {
             console.log(`Info: Logged in as ${this.client.user.tag}!`)
             var channel = this.getChannelById(ChannelIds.Welcome) as TextChannel
             if (!isNullOrUndefined(channel)) {
-                channel.send("Ah yeet")
                 this.channels.push(channel)
             }
         })
