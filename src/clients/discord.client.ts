@@ -1,6 +1,6 @@
 import { Client, TextChannel, Message, MessageReaction, User } from "discord.js";
 import { MessageHandler } from "discord-message-handler";
-import { MessageReactionHandler } from "../handlers/message.reaction.handler";
+import { MessageReactionHandler } from "../message.reaction.handler";
 import { MessageService } from "../services/message.service";
 import { dependencyInjectionContainer } from "../di-container";
 import { RaidCommand } from "../commands/raid.command";
@@ -12,13 +12,7 @@ import { JoinCommand } from "../commands/join.command"
 import { ScanRaidImageCommand } from "../commands/scanraidimage.command";
 
 const allowedChannels: string[] = [ChannelIds.Welcome.toString(), ChannelIds.RaidRoeselare.toString(), ChannelIds.RaidIzegem.toString(), ChannelIds.RaidScanChannel.toString()]
-const setupCommands = (handler: MessageHandler) => {
-    RaidCommand.setup(handler)
-    RegisterRankCommand.setup(handler)
-    CounterCommand.setup(handler)
-    JoinCommand.setup(handler)
-    ScanRaidImageCommand.setup(handler)
-}
+
 export class DiscordClient {
 
     client: Client = new Client()
@@ -28,7 +22,7 @@ export class DiscordClient {
 
     channels: TextChannel[] = []
     constructor() {
-       setupCommands(this.handler)
+        this.setupCommands(this.handler)
     }
 
     login() {
@@ -50,9 +44,7 @@ export class DiscordClient {
                 console.log(`Member with id: ${guildMemberId} joined discord.`)
             } else if (message.type === "DEFAULT") {
                 this.messageService.setMessage(message)
-                if (allowedChannels.some(x => x === message.channel.id)) {
-                    this.handler.handleMessage(message)
-                }
+                this.handler.handleMessage(message)
             }
         })
     }
@@ -73,18 +65,13 @@ export class DiscordClient {
     getChannelById(id: string) {
         return this.client.channels.get(id);
     }
+
+    private setupCommands = (handler: MessageHandler) => {
+        RaidCommand.setup(handler)
+        RegisterRankCommand.setup(handler)
+        CounterCommand.setup(handler)
+        JoinCommand.setup(handler)
+        ScanRaidImageCommand.setup(handler)
+    }
 }
 
-export class CustomString {
-    private _input: string;
-    constructor(input: string) {
-        this._input = input;
-    }
-    capitalizeFirstLetter() {
-        return this._input[0].toUpperCase() + this._input.substring(1)
-    }
-    getLastArrayItemSplitOnSlashWithASlashAsLastCharacter() {
-        var array = this._input.split('\/')
-        return array[array.length - 2]
-    }
-}

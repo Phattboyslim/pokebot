@@ -1,7 +1,6 @@
 import { dependencyInjectionContainer } from "../di-container";
-import { GoogleCloudServices } from "./google-cloud.services";
+import { GoogleCloudServices } from "../services/google-cloud.services";
 import { injectable } from "inversify";
-import { FileService } from "./file.service";
 
 const axios = require('axios').default;
 

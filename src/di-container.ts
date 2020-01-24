@@ -5,10 +5,9 @@ import { RaidService } from "./services/raid.service"
 import { MessageService } from "./services/message.service";
 import { PokemonService } from "./services/pokemon.service";
 import { GoogleCloudServices } from "./services/google-cloud.services";
-import { GoogleCloudClient } from "./services/google-cloud-vision.client";
+import { GoogleCloudClient } from "./clients/google-cloud-vision.client";
 import { PokemonStore } from "./stores/pokemon.store";
 import { RaidStore } from "./stores/raid.store";
-import { TextValidator } from "./clients/text.validator";
 
 const dependencyInjectionContainer = new Container();
 // Services
@@ -24,6 +23,4 @@ dependencyInjectionContainer.bind<GoogleCloudClient>(GoogleCloudClient).toSelf()
 dependencyInjectionContainer.bind<RaidStore>(RaidStore).toSelf().inSingletonScope();
 dependencyInjectionContainer.bind<PokemonStore>(PokemonStore).toSelf().inSingletonScope();
 
-// Misc
-dependencyInjectionContainer.bind<TextValidator>(TextValidator).toSelf().inSingletonScope();
 export { dependencyInjectionContainer };

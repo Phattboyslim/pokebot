@@ -1,8 +1,8 @@
 import { MessageReaction, User } from "discord.js";
-import { RaidService } from "../services/raid.service";
-import { dependencyInjectionContainer } from "../di-container";
-import { Raid } from "../models/raid.class";
-import { MessageService } from "../services/message.service";
+import { RaidService } from "./services/raid.service";
+import { dependencyInjectionContainer } from "./di-container";
+import { Raid } from "./models/raid.class";
+import { MessageService } from "./services/message.service";
 
 const additionsEmojis = ['1⃣', '2⃣', '3⃣', '4⃣', '5⃣', '6⃣', '7⃣', '8⃣', '9⃣']
 export class MessageReactionHandler {

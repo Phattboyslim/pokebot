@@ -1,16 +1,15 @@
 import { MessageHandler } from "discord-message-handler";
 import { Message, TextChannel, RichEmbed } from "discord.js";
 import { isNullOrUndefined, isNull } from "util";
-import { GoogleCloudClient } from "../services/google-cloud-vision.client";
+import { GoogleCloudClient } from "../clients/google-cloud-vision.client";
 import { dependencyInjectionContainer } from "../di-container";
 import { ChannelIds } from "../models/channelIds.enum";
-import { TextValidator } from "../clients/text.validator";
 import { RaidStore } from "../stores/raid.store";
 import { PokemonStore } from "../stores/pokemon.store";
 import { pokemon } from "./../resources/statics/pokemon"
-import { CustomString } from "../clients/discord.client";
 import { GymInfo } from "../models/GymInfo";
 import { DiscordHelper } from "../helpers/discord.helper";
+
 const arrayWithGenerations: any[] = [pokemon.gen1, pokemon.gen2, pokemon.gen3, pokemon.gen4, pokemon.gen5];
 var uuidv4 = require('uuid/v4')
 export class ScanRaidImageCommand {
@@ -82,7 +81,7 @@ export class ScanRaidImageCommand {
                 })
 
                 // Get the time left until hatch or disapear
-                var timeLeft = resultWithNumbers.filter(x => TextValidator.hasNthOccurencesOf(x, ":") == 2)[0].substring(0, 8)
+                var timeLeft = resultWithNumbers.filter(x => ScanRaidImageCommand.getNthOccurencesOf(x, ":") == 2)[0].substring(0, 8)
 
                 // Determine isHatched based on found a pokemon name
                 var isHatched = !isNull(pokemonMatch)
@@ -130,6 +129,15 @@ export class ScanRaidImageCommand {
             Tiers: tiers
         });
         (message.guild.channels.get('655418834358108220') as TextChannel).sendEmbed(returnMessage)
+    }
+    private static getNthOccurencesOf(input: string, match: string) {
+        var count = 0;
+        for (var i = 0; i < input.length; i++) {
+            if (input.charAt(i) === match) {
+                count++;
+            }
+        }
+        return count;
     }
 }
 
